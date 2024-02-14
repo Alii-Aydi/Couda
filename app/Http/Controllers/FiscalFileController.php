@@ -11,6 +11,10 @@ use Inertia\Response;
 
 class FiscalFileController extends Controller
 {
+    public function create(): Response
+    {
+        return Inertia::render('Admin/CreateFile');
+    }
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -39,10 +43,5 @@ class FiscalFileController extends Controller
         $fiscalFile = FiscalFile::create($validated);
 
         return redirect()->route('dashboard')->with('message', 'Fiscal file created successfully!');
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('Admin/CreateFile');
     }
 }
