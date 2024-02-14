@@ -36,7 +36,7 @@ const handleSubmit = (e) => {
 
 export default function Navbar({ user }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    console.log(user)
+    //console.log(user)
 
     return (
         <header className="bg-white">
