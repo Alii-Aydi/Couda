@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     //Dashboard
     Route::get('/dashboard/createFile', [FiscalFileController::class, 'create'])->name('file.show');
+    Route::post('/dashboard/createFile', [FiscalFileController::class, 'store'])->name('file.store');
 });
 
 require __DIR__ . '/auth.php';

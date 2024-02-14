@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useForm } from '@inertiajs/inertia-react';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { useDropzone } from 'react-dropzone';
 import { FaFileAlt } from 'react-icons/fa';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 export default function CreateFiscalFile({ auth }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         cin_or_fiscal_number: '',
         taxation_date: '',
@@ -50,15 +49,15 @@ export default function CreateFiscalFile({ auth }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        post('/fiscal-files', data, {
-            forceFormData: true,
-        });
+        post(route('file.store'))
     }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: handleDrop,
         accept: 'application/pdf, image/*',
     });
+
+    console.log(errors.name)
 
     return (
 
@@ -200,9 +199,10 @@ export default function CreateFiscalFile({ auth }) {
                                         <FaFileAlt className="mr-2" size="1.5em" />
                                         <p>{droppedFile.name} is ready to be uploaded.</p>
                                     </div>) :
-                                    isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop a report here, or click to select files</p>
+                                    isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>
                             }
                         </div>
+                        {errors.report && <div className="text-red-500">{errors.report}</div>}
                         {uploadMessage && <div className="text-center my-2">{uploadMessage}</div>}
                         {uploadProgress > 0 && (
                             <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">

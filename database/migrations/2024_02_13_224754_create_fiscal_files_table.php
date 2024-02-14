@@ -19,7 +19,7 @@ class CreateFiscalFilesTable extends Migration
             $table->string('issuing_organism');
             $table->date('delivery_date_to_admin');
             $table->date('receipt_date');
-            $table->text('report');
+            $table->string('report');
             $table->timestamps();
         });
     }
