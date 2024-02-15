@@ -2,89 +2,105 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { MenuItem } from '@mui/material';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-import { useMemo } from 'react';
-
-const data = [
-    {
-        name: {
-            firstName: 'John',
-            lastName: 'Doe',
-        },
-        address: '261 Erdman Ford',
-        city: 'East Daphne',
-        state: 'Kentucky',
-    },
-    {
-        name: {
-            firstName: 'Jane',
-            lastName: 'Doe',
-        },
-        address: '769 Dominic Grove',
-        city: 'Columbus',
-        state: 'Ohio',
-    },
-    {
-        name: {
-            firstName: 'Joe',
-            lastName: 'Doe',
-        },
-        address: '566 Brakus Inlet',
-        city: 'South Linda',
-        state: 'West Virginia',
-    },
-    {
-        name: {
-            firstName: 'Kevin',
-            lastName: 'Vandy',
-        },
-        address: '722 Emie Stream',
-        city: 'Lincoln',
-        state: 'Nebraska',
-    },
-    {
-        name: {
-            firstName: 'Joshua',
-            lastName: 'Rolluffs',
-        },
-        address: '32188 Larkin Turnpike',
-        city: 'Charleston',
-        state: 'South Carolina',
-    },
-];
+import { useState, useEffect, useMemo } from 'react';
+import { Link } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import ImageIcon from '@mui/icons-material/Image';
+import DescriptionIcon from '@mui/icons-material/Description'; // Generic icon for Excel/CSV
 
 export default function Dashboard({ auth }) {
+    const [data, setData] = useState([]);
 
-    //should be memoized or stable
+    useEffect(() => {
+        fetch('/dashboard/fiscalFiles')
+            .then(response => response.json())
+            .then(data => setData(data.data))
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
+
+    // Helper function to determine the icon based on the file extension
+    const getFileIcon = (filePath) => {
+        if (filePath.endsWith('.pdf')) {
+            return <PictureAsPdfIcon />;
+        } else if (filePath.match(/\.(jpeg|jpg|gif|png)$/)) {
+            return <ImageIcon />;
+        } else if (filePath.match(/\.(csv|xlsx|xls)$/)) {
+            return <DescriptionIcon />;
+        } else {
+            return <DescriptionIcon />; // Fallback icon
+        }
+    };
+
+
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'name.firstName', //access nested data with dot notation
-                header: 'First Name',
-                size: 150,
+                accessorKey: 'name',
+                header: 'Name',
+                size: 100, // Reduced size for name, assuming short names
             },
             {
-                accessorKey: 'name.lastName',
-                header: 'Last Name',
-                size: 150,
+                accessorKey: 'cin_or_fiscal_number',
+                header: 'CIN/Fiscal No.',
+                size: 120, // Slightly reduced, compact abbreviation
             },
             {
-                accessorKey: 'address', //normal accessorKey
-                header: 'Address',
-                size: 200,
+                accessorKey: 'taxation_date',
+                header: 'Taxation Date',
+                size: 110, // Dates can be compact if formatted as YYYY-MM-DD
             },
             {
-                accessorKey: 'city',
-                header: 'City',
-                size: 150,
+                accessorKey: 'tax_center',
+                header: 'Tax Center',
+                size: 120, // Assuming tax center names are not overly long
             },
             {
-                accessorKey: 'state',
-                header: 'State',
-                size: 150,
+                accessorKey: 'tax_amount',
+                header: 'Tax Amount',
+                size: 90, // Numbers can be quite compact, especially if not too large
+            },
+            {
+                accessorKey: 'theme',
+                header: 'Theme',
+                size: 100, // Reduced, assuming short theme names
+            },
+            {
+                accessorKey: 'issuing_organism',
+                header: 'Issuing Org.',
+                size: 120, // Abbreviated to save space
+            },
+            {
+                accessorKey: 'delivery_date_to_admin',
+                header: 'Delivery Date',
+                size: 110, // Compact date format
+            },
+            {
+                accessorKey: 'receipt_date',
+                header: 'Receipt Date',
+                size: 110, // Compact date format
+            },
+            {
+                accessorKey: 'report',
+                header: 'Center Report',
+                Cell: ({ cell }) => {
+                    let filename = cell.getValue();
+                    filename = filename.replace(/\//g, ' ');
+                    const fileUrl = `/files/${filename}`;
+                    const Icon = getFileIcon(filename);
+
+                    return (
+                        <Link href={fileUrl} target="_blank" rel="noopener noreferrer" title="Download or view file">
+                            {Icon}
+                        </Link>
+                    );
+                },
+                size: 90,
             },
         ],
         [],
     );
+
+    console.log(data)
 
     const table = useMaterialReactTable({
         columns,

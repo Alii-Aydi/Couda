@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FiscalFile;
+use App\Services\FiscalFileService;
+use App\Services\StorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,16 @@ use Inertia\Response;
 
 class FiscalFileController extends Controller
 {
+
+    protected $fiscalFileService;
+
+    public function __construct(FiscalFileService $fiscalFileService)
+    {
+        $this->fiscalFileService = $fiscalFileService;
+    }
+
+
+
     public function create(): Response
     {
         return Inertia::render('Admin/CreateFile');
@@ -30,18 +41,17 @@ class FiscalFileController extends Controller
             'report' => 'required|file|mimes:pdf,doc,docx,png,jpg',
         ]);
 
-        if ($request->hasFile('report')) {
-            $file = $request->file('report');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $filePath = 'private/reports/centre_report/' . $validated['cin_or_fiscal_number'] . '/' . $filename;
-            Storage::put($filePath, file_get_contents($file));
-
-            // Add file path to validated data if you want to store it in the database
-            $validated['report'] = $filePath;
-        }
-
-        $fiscalFile = FiscalFile::create($validated);
+        $fiscalFile = $this->fiscalFileService->storeFiscalFile($validated, $request->file('report'));
 
         return redirect()->route('dashboard')->with('message', 'Fiscal file created successfully!');
+    }
+
+    public function all()
+    {
+        return response()->json([
+            'data' => $this->fiscalFileService->getAllFiles(),
+            'status' => 'success',
+            'message' => 'Fiscal files retrieved successfully',
+        ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
     }
 }

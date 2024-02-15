@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FiscalFileController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StorageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,6 +34,9 @@ Route::middleware('auth')->group(function () {
     //Dashboard
     Route::get('/dashboard/createFile', [FiscalFileController::class, 'create'])->name('file.show');
     Route::post('/dashboard/createFile', [FiscalFileController::class, 'store'])->name('file.store');
+    Route::get('/dashboard/fiscalFiles', [FiscalFileController::class, 'all'])->name('file.all');
+    //storage
+    Route::get('/files/{filename}', [StorageController::class, 'showCentralReport'])->name('repots.show');
 });
 
 require __DIR__ . '/auth.php';
