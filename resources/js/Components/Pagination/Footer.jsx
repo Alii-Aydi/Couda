@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/inertia-react';
 
 const Footer = () => {
     return (
-        <footer className="bg-white text-gray-600">
+        <footer className="bg-white pt-10 text-gray-600">
             <div className="mx-auto max-w-7xl items-center p-6 lg:px-8">
                 <div className="xl:flex xl:justify-between">
                     <div className="mb-6 xl:mb-0 flex-shrink-0">

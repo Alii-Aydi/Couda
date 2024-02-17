@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FiscalFile;
 use App\Services\FiscalFileService;
 use App\Services\StorageService;
 use Illuminate\Http\Request;
@@ -21,6 +22,14 @@ class FiscalFileController extends Controller
     }
 
 
+    public function all()
+    {
+        return response()->json([
+            'data' => $this->fiscalFileService->getAllFiles(),
+            'status' => 'success',
+            'message' => 'Fiscal files retrieved successfully',
+        ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
+    }
 
     public function create(): Response
     {
@@ -43,15 +52,15 @@ class FiscalFileController extends Controller
 
         $fiscalFile = $this->fiscalFileService->storeFiscalFile($validated, $request->file('report'));
 
-        return redirect()->route('dashboard')->with('message', 'Fiscal file created successfully!');
+        return redirect()->route('dashboard')->with('success', 'Fiscal file created successfully!');
     }
 
-    public function all()
+    public function edit($id)
     {
-        return response()->json([
-            'data' => $this->fiscalFileService->getAllFiles(),
-            'status' => 'success',
-            'message' => 'Fiscal files retrieved successfully',
-        ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
+        $post = $this->fiscalFileService->findOne($id);
+
+        return Inertia::render('Admin/EditFile', [
+            'file' => $post,
+        ]);
     }
 }

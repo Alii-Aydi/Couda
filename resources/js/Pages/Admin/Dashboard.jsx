@@ -7,6 +7,8 @@ import { Link } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description'; // Generic icon for Excel/CSV
+import { Inertia } from '@inertiajs/inertia';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 
 export default function Dashboard({ auth }) {
     const [data, setData] = useState([]);
@@ -37,47 +39,47 @@ export default function Dashboard({ auth }) {
             {
                 accessorKey: 'name',
                 header: 'Name',
-                size: 100, // Reduced size for name, assuming short names
+                size: 100,
             },
             {
                 accessorKey: 'cin_or_fiscal_number',
                 header: 'CIN/Fiscal No.',
-                size: 120, // Slightly reduced, compact abbreviation
+                size: 120,
             },
             {
                 accessorKey: 'taxation_date',
                 header: 'Taxation Date',
-                size: 110, // Dates can be compact if formatted as YYYY-MM-DD
+                size: 110,
             },
             {
                 accessorKey: 'tax_center',
                 header: 'Tax Center',
-                size: 120, // Assuming tax center names are not overly long
+                size: 120,
             },
             {
                 accessorKey: 'tax_amount',
                 header: 'Tax Amount',
-                size: 90, // Numbers can be quite compact, especially if not too large
+                size: 90,
             },
             {
                 accessorKey: 'theme',
                 header: 'Theme',
-                size: 100, // Reduced, assuming short theme names
+                size: 100,
             },
             {
                 accessorKey: 'issuing_organism',
                 header: 'Issuing Org.',
-                size: 120, // Abbreviated to save space
+                size: 120,
             },
             {
                 accessorKey: 'delivery_date_to_admin',
                 header: 'Delivery Date',
-                size: 110, // Compact date format
+                size: 110,
             },
             {
                 accessorKey: 'receipt_date',
                 header: 'Receipt Date',
-                size: 110, // Compact date format
+                size: 110,
             },
             {
                 accessorKey: 'report',
@@ -95,26 +97,50 @@ export default function Dashboard({ auth }) {
                     );
                 },
                 size: 90,
+                enableSorting: false,
             },
         ],
         [],
     );
 
-    console.log(data)
+    //console.log(data)
 
     const table = useMaterialReactTable({
         columns,
         data,
+        enableSorting: true,
         enableRowActions: true,
         renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => console.info('Edit')}>
-                Edit
+            <MenuItem key="edit" onClick={() => handleEdit(row.original.id)}>
+                <div className='flex'><PencilSquareIcon className='h-5 pr-2 text-indigo-500'></PencilSquareIcon>Edit</div>
             </MenuItem>,
-            <MenuItem key="delete" onClick={() => console.info('Delete')}>
-                Delete
+            <MenuItem key="delete" onClick={() => handleDelete(row.original.id)}>
+                <div className='flex'><TrashIcon className='h-5 pr-2 text-red-500'></TrashIcon> Delete</div>
             </MenuItem>,
         ],
     });
+
+    const handleEdit = (id) => {
+        console.info(`Edit ID: ${id}`);
+        Inertia.visit(`/dashboard/fiscalFiles/edit/${id}`, {
+            method: 'get',
+        });
+    };
+
+    const handleDelete = (id) => {
+        console.info(`Delete ID: ${id}`)
+        fetch(`/api/records/${id}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.info('Record deleted successfully');
+                    setData(data.filter(item => item.id !== id));
+                }
+            })
+            .catch(error => console.error('Error deleting record:', error));
+    };
+
 
     return (
         <AuthenticatedLayout

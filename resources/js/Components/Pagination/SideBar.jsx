@@ -1,17 +1,21 @@
 import { InertiaLink } from '@inertiajs/inertia-react';
 import React, { useState } from 'react';
 import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { useThemeMode } from '@/Components/Contexts/ThemeContext';
+import ThemeToggler from '../Descorations/CustomTogler';
+import ProfileCircle from '../Profile/Partials/ProfileCircle';
 
 export function SidebarWithLogo() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isGestionDossiersOpen, setIsGestionDossiersOpen] = useState(false);
+    const { mode, toggleTheme } = useThemeMode();
 
     return (
         <>
             <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div className="px-3 py-3 lg:px-5 lg:pl-3">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center justify-start rtl:justify-end">
+                        <div className="flex flex-1 items-center justify-start rtl:justify-end">
                             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} data-drawer-target="logo-sidebar" aria-controls="logo-sidebar" type="button" className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                                 <span className="sr-only">Open sidebar</span>
                                 <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path></svg>
@@ -20,6 +24,11 @@ export function SidebarWithLogo() {
                                 <img src="/imgs/Insigne_Ministère_des_Finances.svg.png" className="h-8 me-3" alt="FlowBite Logo" />
                                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Admin</span>
                             </InertiaLink>
+                        </div>
+                        <div className='flex items-center'>
+                            <ThemeToggler></ThemeToggler>
+                            <div className="mx-4"></div>
+                            <ProfileCircle src={"https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} alt={"Profile Pic"}></ProfileCircle>
                         </div>
                     </div>
                 </div>

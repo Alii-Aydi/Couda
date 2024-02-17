@@ -1,15 +1,20 @@
+import { ThemeProvider } from '@/Components/Contexts/ThemeContext';
+import Flash from '@/Components/Descorations/Flash';
 import { SidebarWithLogo } from '@/Components/Pagination/SideBar';
 import { useState } from 'react';
 
 export default function Authenticated({ user, children }) {
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <ThemeProvider>
+            <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+                <Flash></Flash>
+                <SidebarWithLogo ></SidebarWithLogo>
 
-            <SidebarWithLogo ></SidebarWithLogo>
+                <main className="p-4 sm:ml-64">
+                    {children}
+                </main>
+            </div>
+        </ThemeProvider>
 
-            <main className="p-4 sm:ml-64">
-                {children}
-            </main>
-        </div>
     );
 }

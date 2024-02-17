@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/createFile', [FiscalFileController::class, 'create'])->name('file.show');
     Route::post('/dashboard/createFile', [FiscalFileController::class, 'store'])->name('file.store');
     Route::get('/dashboard/fiscalFiles', [FiscalFileController::class, 'all'])->name('file.all');
+    Route::get('/dashboard/fiscalFiles/edit/{id}', [FiscalFileController::class, 'edit'])->name('edit.record');
     //storage
     Route::get('/files/{filename}', [StorageController::class, 'showCentralReport'])->name('repots.show');
 });

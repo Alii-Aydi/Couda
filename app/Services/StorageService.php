@@ -20,6 +20,9 @@ class StorageService
     {
         $path = str_replace(' ', '/', $filename);
 
+        // Log::alert($filename);
+        // Log::alert($path);
+
         if (!Storage::exists($path)) {
             abort(404);
         }

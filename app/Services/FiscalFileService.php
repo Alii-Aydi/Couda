@@ -33,4 +33,10 @@ class FiscalFileService
         $files = FiscalFile::all();
         return $files;
     }
+
+    public function findOne($id)
+    {
+        // Encapsulate the logic to retrieve a fiscal file
+        return FiscalFile::findOrFail($id);
+    }
 }

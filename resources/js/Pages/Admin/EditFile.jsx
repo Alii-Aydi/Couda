@@ -1,26 +1,40 @@
-import React, { useState } from 'react';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import React, { useEffect, useState } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { Link } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { FaFileAlt } from 'react-icons/fa';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import Flash from '@/Components/Descorations/Flash';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'; // Assuming you're using MUI icons
+import ImageIcon from '@mui/icons-material/Image';
+import DescriptionIcon from '@mui/icons-material/Description'; // Generic icon for other files
 
-export default function CreateFiscalFile({ auth }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        cin_or_fiscal_number: '',
-        taxation_date: '',
-        tax_center: '',
-        tax_amount: '',
-        theme: '',
-        issuing_organism: '',
-        delivery_date_to_admin: '',
-        receipt_date: '',
-        report: null,
+export default function EditFiscalFile({ auth, file }) {
+    const { data, setData, post, processing, errors, reset, put } = useForm({
+        name: file.name,
+        cin_or_fiscal_number: file.cin_or_fiscal_number,
+        taxation_date: file.taxation_date,
+        tax_center: file.tax_center,
+        tax_amount: file.tax_amount,
+        theme: file.theme,
+        issuing_organism: file.issuing_organism,
+        delivery_date_to_admin: file.delivery_date_to_admin,
+        receipt_date: file.receipt_date,
+        report: null, // Initially, no file is selected for upload
     });
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadMessage, setUploadMessage] = useState('');
     const [droppedFile, setDroppedFile] = useState(null);
+
+    // Helper function to determine the icon based on the file extension
+    const getFileIcon = (filePath) => {
+        if (filePath.endsWith('.pdf')) {
+            return <PictureAsPdfIcon />;
+        } else if (filePath.match(/\.(jpeg|jpg|gif|png)$/)) {
+            return <ImageIcon />;
+        } else {
+            return <DescriptionIcon />; // Fallback icon for other file types
+        }
+    };
 
     function handleChange(e) {
         setData(e.target.name, e.target.value);
@@ -50,7 +64,7 @@ export default function CreateFiscalFile({ auth }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        post(route('file.store'))
+        put(route('file.update', file.id)); // Use 'put' for update operations
     }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -58,17 +72,19 @@ export default function CreateFiscalFile({ auth }) {
         accept: 'application/pdf, image/*',
     });
 
-    console.log(errors.name)
+    useEffect(() => {
+        if (file.report) {
+            setDroppedFile({
+                name: file.report.split('/').pop(), // Assuming 'file.report' is the path
+            });
+        }
+    }, [file.report]);
 
     return (
-
-        <AuthenticatedLayout
-            user={auth.user}
-        >
-            <Head title="Creation Dossier" />
-
+        <AuthenticatedLayout user={auth.user}>
+            <Head title="Edit Dossier" />
             <div className="py-12">
-                <h1 className='p-4 text-4xl'>Create a Dossier Fiscale</h1>
+                <h1 className='p-4 text-4xl'>Edit Dossier Fiscale</h1>
                 <div className="p-7 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
@@ -180,28 +196,38 @@ export default function CreateFiscalFile({ auth }) {
                             {errors.receipt_date && <div className="text-red-500">{errors.receipt_date}</div>}
                         </div>
 
-                        <div {...getRootProps()} className={`border-dashed border-4 ${isDragActive ? 'border-indigo-500 bg-indigo-100' : 'border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800'} text-center py-8 rounded-3xl h-60 flex justify-center items-center`}>
+                        {/* Dropzone and Existing File Display */}
+                        <div {...getRootProps()} className={`border-dashed border-4 ${isDragActive ? 'border-indigo-500 bg-indigo-100 dark:border-indigo-400 dark:bg-indigo-900' : 'border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800'} text-center py-8 rounded-3xl h-60 flex flex-col justify-center items-center`}>
                             <input {...getInputProps()} />
-                            {droppedFile ? (<div className="flex items-center justify-center">
-                                <FaFileAlt className="mr-2" size="1.5em" />
-                                <p>{droppedFile.name} is ready to be uploaded.</p>
-                            </div>) : isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>}
+                            {droppedFile ? (
+                                <div className="flex items-center justify-center">
+                                    <FaFileAlt className="mr-2 text-gray-700 dark:text-gray-300" size="1.5em" />
+                                    <p className="text-gray-700 dark:text-gray-300">{droppedFile.name}</p>
+                                </div>
+                            ) : isDragActive ? <p className="text-gray-700 dark:text-gray-300">Drop the files here ...</p> : <p className="text-gray-700 dark:text-gray-300">Drag 'n' drop the new report here, or click to select file</p>}
                         </div>
-                        {errors.report && <div className="text-red-500">{errors.report}</div>}
-                        {uploadMessage && <div className="text-center my-2">{uploadMessage}</div>}
+                        {file.report && (
+                            <div className="text-gray-700 dark:text-gray-300">
+                                <span>View Or Download Old Report: </span>
+                                <Link href={`/files/${file.report.replace(/\//g, ' ')}`} target="_blank" rel="noopener noreferrer" title="Download or view file">
+                                    {getFileIcon(file.report)}
+                                </Link>
+                            </div>
+                        )}
+                        {uploadMessage && <div className="text-center my-2 text-gray-700 dark:text-gray-300">{uploadMessage}</div>}
                         {uploadProgress > 0 && (
                             <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                                 <div className="bg-indigo-500 h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
                             </div>
                         )}
+                        {errors.report && <div className="text-red-500 dark:text-red-400">{errors.report}</div>}
 
-                        <button type="submit" disabled={processing} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-3xl text-white bg-indigo-500 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-800">
-                            Submit
+
+                        <button type="submit" disabled={processing} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-3xl text-white bg-indigo-500 hover:bg-indigo-700">
+                            Mis a jour
                         </button>
                     </form>
-
                 </div>
-
             </div>
         </AuthenticatedLayout>
     );
