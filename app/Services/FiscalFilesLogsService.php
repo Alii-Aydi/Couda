@@ -16,6 +16,13 @@ class FiscalFilesLogsService
     }
 
 
+    public function getAllLogs()
+    {
+        $files = FiscalFilesLogs::all();
+        return $files;
+    }
+
+
     public function storeFiscalFileLog($fiscalFile)
     {
         $userId = auth()->id();

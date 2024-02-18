@@ -1,24 +1,17 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import { MenuItem } from '@mui/material';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from '@mui/material';
 import getFileIcon from '@/Utils/getFileIcon';
-import { Inertia } from '@inertiajs/inertia';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
-import { Archive } from '@mui/icons-material';
-
-export default function MaterialTable({ auth }) {
+export default function MaterialLogsTable({ auth }) {
     const [data, setData] = useState([]);
     const [userNames, setUserNames] = useState({});
 
     useEffect(() => {
-        fetch('/dashboard/fiscalFiles')
+        fetch('/dashboard/fiscalFilesLogsAll')
             .then(response => response.json())
             .then(data => {
                 setData(data.data);
-                const userIds = [...new Set(data.data.map(item => item.created_by))];
+                const userIds = [...new Set(data.data.map(item => item.updated_by))];
                 userIds.forEach(id => {
                     fetch(`/users/${id}`)
                         .then(response => response.json())
@@ -34,10 +27,24 @@ export default function MaterialTable({ auth }) {
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'id',
+                accessorKey: 'fiscal_file_id',
                 header: 'ID',
                 size: 10,
             },
+            {
+                accessorKey: 'created_at',
+                header: 'Updated At',
+                Cell: ({ cell }) => new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                }).format(new Date(cell.getValue())),
+                size: 10,
+            },
+
             {
                 accessorKey: 'name',
                 header: 'Name',
@@ -102,8 +109,8 @@ export default function MaterialTable({ auth }) {
                 enableSorting: false,
             },
             {
-                accessorKey: 'created_by',
-                header: 'Created By',
+                accessorKey: 'updated_by',
+                header: 'Updated By',
                 Cell: ({ cell }) => userNames[cell.getValue()] || 'Loading...',
                 size: 10,
             },
@@ -111,49 +118,22 @@ export default function MaterialTable({ auth }) {
         [userNames],
     );
 
+    console.log(userNames)
+
     //console.log(data)
 
     const table = useMaterialReactTable({
         columns,
         data,
         enableSorting: true,
-        enableRowActions: true,
         enableRowSelection: true,
-        renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => handleEdit(row.original.id)}>
-                <div className='flex'><PencilSquareIcon className='h-5 pr-2 text-green-500'></PencilSquareIcon>Edit</div>
-            </MenuItem>,
-            <MenuItem key="delete" onClick={() => handleDelete(row.original.id)}>
-                <div className='flex'><Archive className='h-5 pr-2 text-gray-500'></Archive> Archiver</div>
-            </MenuItem>,
-        ],
     });
-
-    const handleEdit = (id) => {
-        console.info(`Edit ID: ${id}`);
-        Inertia.visit(`/dashboard/fiscalFiles/edit/${id}`, {
-            method: 'get',
-        });
-    };
-
-    const handleDelete = (id) => {
-        console.info(`Delete ID: ${id}`)
-        fetch(`/api/records/${id}`, {
-            method: 'DELETE',
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.info('Record deleted successfully');
-                    setData(data.filter(item => item.id !== id));
-                }
-            })
-            .catch(error => console.error('Error deleting record:', error));
-    };
 
 
     return (
         <MaterialReactTable
             table={table}
+            style={{ maxWidth: '100vw' }}
         />
     );
 }

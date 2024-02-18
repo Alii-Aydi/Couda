@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\FiscalFileController;
+use App\Http\Controllers\FiscalFilesLogsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StorageController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,9 +37,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/createFile', [FiscalFileController::class, 'create'])->name('file.show');
     Route::post('/dashboard/createFile', [FiscalFileController::class, 'store'])->name('file.store');
     Route::get('/dashboard/fiscalFiles', [FiscalFileController::class, 'all'])->name('file.all');
-    Route::get('/dashboard/fiscalFilesList', [FiscalFileController::class, 'list'])->name('file.all');
+    Route::get('/dashboard/fiscalFilesList', [FiscalFileController::class, 'list'])->name('file.list');
     Route::get('/dashboard/fiscalFiles/edit/{id}', [FiscalFileController::class, 'edit'])->name('edit.record');
     Route::post('/dashboard/fiscalFiles/edit/{id}', [FiscalFileController::class, 'updateFiscalFile'])->name('update.record'); //as put
+    //Logs
+    Route::get('/dashboard/fiscalFilesLogsList', [FiscalFilesLogsController::class, 'list'])->name('fileLogs.list');
+    Route::get('/dashboard/fiscalFilesLogsAll', [FiscalFilesLogsController::class, 'all'])->name('fileLogs.all');
+    //user
+    Route::get('/users/{id}', [UserController::class, 'getUserById']);
     //Storage
     Route::get('/files/{filename}', [StorageController::class, 'showCentralReport'])->name('repots.show');
 });

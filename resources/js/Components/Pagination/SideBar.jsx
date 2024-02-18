@@ -56,7 +56,7 @@ export function SidebarWithLogo() {
                                 <ul className="pl-8">
                                     <li className="p-2"><InertiaLink href="/dashboard/fiscalFilesList" className="block"><FiEye className="inline-block mr-2" /> Consulter</InertiaLink></li>
                                     <li className="p-2"><InertiaLink href="/dashboard/createFile" className="block"><FiPlus className="inline-block mr-2" /> Create</InertiaLink></li>
-                                    <li className="p-2"><a href="#" className="block"><FiList className="inline-block mr-2" /> Archive</a></li>
+                                    <li className="p-2"><InertiaLink href="/dashboard/fiscalFilesLogsList" className="block"><FiList className="inline-block mr-2" /> Archive</InertiaLink></li>
                                 </ul>
                             )}
                         </li>
