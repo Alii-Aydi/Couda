@@ -1,6 +1,6 @@
 import { InertiaLink } from '@inertiajs/inertia-react';
 import React, { useState } from 'react';
-import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiTrash2, FiEye, FiList } from 'react-icons/fi';
 import { useThemeMode } from '@/Components/Contexts/ThemeContext';
 import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
@@ -54,9 +54,9 @@ export function SidebarWithLogo() {
                             </button>
                             {isGestionDossiersOpen && (
                                 <ul className="pl-8">
-                                    <li className="p-2"><InertiaLink href="/dashboard/createFile" className="block"><FiPlus className="inline-block" /> Create</InertiaLink></li>
-                                    <li className="p-2"><a href="#" className="block"><FiEdit className="inline-block" /> Update</a></li>
-                                    <li className="p-2"><a href="#" className="block"><FiTrash2 className="inline-block" /> Delete</a></li>
+                                    <li className="p-2"><InertiaLink href="/dashboard/fiscalFilesList" className="block"><FiEye className="inline-block mr-2" /> Consulter</InertiaLink></li>
+                                    <li className="p-2"><InertiaLink href="/dashboard/createFile" className="block"><FiPlus className="inline-block mr-2" /> Create</InertiaLink></li>
+                                    <li className="p-2"><a href="#" className="block"><FiList className="inline-block mr-2" /> Archive</a></li>
                                 </ul>
                             )}
                         </li>

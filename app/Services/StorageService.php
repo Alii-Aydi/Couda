@@ -9,19 +9,19 @@ class StorageService
 {
     public function storeCentralReport($reportFile, $cin)
     {
-        $filename = time() . '_' . $reportFile->getClientOriginalName();
-        $filePath = 'private/reports/centre_report/' . $cin . '/' . $filename;
-        Storage::put($filePath, file_get_contents($reportFile));
+        if ($reportFile) {
+            $filename = time() . '_' . $reportFile->getClientOriginalName();
+            $filePath = 'private/reports/centre_report/' . $cin . '/' . $filename;
+            Storage::put($filePath, file_get_contents($reportFile));
 
-        return $filePath;
+            return $filePath;
+        }
+        return "none";
     }
 
     public function getCentralReport($filename)
     {
         $path = str_replace(' ', '/', $filename);
-
-        // Log::alert($filename);
-        // Log::alert($path);
 
         if (!Storage::exists($path)) {
             abort(404);

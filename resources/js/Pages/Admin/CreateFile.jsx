@@ -3,7 +3,6 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { useDropzone } from 'react-dropzone';
 import { FaFileAlt } from 'react-icons/fa';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import Flash from '@/Components/Descorations/Flash';
 
 export default function CreateFiscalFile({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -57,8 +56,6 @@ export default function CreateFiscalFile({ auth }) {
         onDrop: handleDrop,
         accept: 'application/pdf, image/*',
     });
-
-    console.log(errors.name)
 
     return (
 

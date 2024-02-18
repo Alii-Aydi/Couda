@@ -31,12 +31,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    //Dashboard
+    //Fiscal Files
     Route::get('/dashboard/createFile', [FiscalFileController::class, 'create'])->name('file.show');
     Route::post('/dashboard/createFile', [FiscalFileController::class, 'store'])->name('file.store');
     Route::get('/dashboard/fiscalFiles', [FiscalFileController::class, 'all'])->name('file.all');
+    Route::get('/dashboard/fiscalFilesList', [FiscalFileController::class, 'list'])->name('file.all');
     Route::get('/dashboard/fiscalFiles/edit/{id}', [FiscalFileController::class, 'edit'])->name('edit.record');
-    //storage
+    Route::post('/dashboard/fiscalFiles/edit/{id}', [FiscalFileController::class, 'updateFiscalFile'])->name('update.record'); //as put
+    //Storage
     Route::get('/files/{filename}', [StorageController::class, 'showCentralReport'])->name('repots.show');
 });
 

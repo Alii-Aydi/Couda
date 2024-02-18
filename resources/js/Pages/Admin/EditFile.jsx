@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { Link } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { FaFileAlt } from 'react-icons/fa';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'; // Assuming you're using MUI icons
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
-import DescriptionIcon from '@mui/icons-material/Description'; // Generic icon for other files
+import DescriptionIcon from '@mui/icons-material/Description';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { InertiaLink } from '@inertiajs/inertia-react';
 
 export default function EditFiscalFile({ auth, file }) {
-    const { data, setData, post, processing, errors, reset, put } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: file.name,
         cin_or_fiscal_number: file.cin_or_fiscal_number,
         taxation_date: file.taxation_date,
@@ -19,7 +21,7 @@ export default function EditFiscalFile({ auth, file }) {
         issuing_organism: file.issuing_organism,
         delivery_date_to_admin: file.delivery_date_to_admin,
         receipt_date: file.receipt_date,
-        report: null, // Initially, no file is selected for upload
+        report: null,
     });
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadMessage, setUploadMessage] = useState('');
@@ -31,8 +33,10 @@ export default function EditFiscalFile({ auth, file }) {
             return <PictureAsPdfIcon />;
         } else if (filePath.match(/\.(jpeg|jpg|gif|png)$/)) {
             return <ImageIcon />;
+        } else if (filePath.endsWith('none')) {
+            return ''
         } else {
-            return <DescriptionIcon />; // Fallback icon for other file types
+            return <DescriptionIcon />;
         }
     };
 
@@ -64,21 +68,24 @@ export default function EditFiscalFile({ auth, file }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        put(route('file.update', file.id)); // Use 'put' for update operations
+        let formData = new FormData();
+        Object.keys(data).forEach(key => {
+            if (data.report && key === 'report') {
+                formData.append(key, data[key], data[key].name);
+            } else {
+                formData.append(key, data[key]);
+            }
+        });
+        formData.append('_method', 'PUT');
+        post(route('update.record', file.id), formData, {
+            forceFormData: true,
+        });
     }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: handleDrop,
         accept: 'application/pdf, image/*',
     });
-
-    useEffect(() => {
-        if (file.report) {
-            setDroppedFile({
-                name: file.report.split('/').pop(), // Assuming 'file.report' is the path
-            });
-        }
-    }, [file.report]);
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -197,35 +204,35 @@ export default function EditFiscalFile({ auth, file }) {
                         </div>
 
                         {/* Dropzone and Existing File Display */}
-                        <div {...getRootProps()} className={`border-dashed border-4 ${isDragActive ? 'border-indigo-500 bg-indigo-100 dark:border-indigo-400 dark:bg-indigo-900' : 'border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800'} text-center py-8 rounded-3xl h-60 flex flex-col justify-center items-center`}>
+                        <div {...getRootProps()} className={`border-dashed border-4 ${isDragActive ? 'border-indigo-500 bg-indigo-100' : 'border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800'} text-center py-8 rounded-3xl h-60 flex justify-center items-center`}>
                             <input {...getInputProps()} />
-                            {droppedFile ? (
-                                <div className="flex items-center justify-center">
-                                    <FaFileAlt className="mr-2 text-gray-700 dark:text-gray-300" size="1.5em" />
-                                    <p className="text-gray-700 dark:text-gray-300">{droppedFile.name}</p>
-                                </div>
-                            ) : isDragActive ? <p className="text-gray-700 dark:text-gray-300">Drop the files here ...</p> : <p className="text-gray-700 dark:text-gray-300">Drag 'n' drop the new report here, or click to select file</p>}
+                            {droppedFile ? (<div className="flex items-center justify-center">
+                                <FaFileAlt className="mr-2" size="1.5em" />
+                                <p>{droppedFile.name} is ready to be uploaded.</p>
+                            </div>) : isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>}
                         </div>
-                        {file.report && (
+                        {file.report && file.report != 'none' ? (
                             <div className="text-gray-700 dark:text-gray-300">
-                                <span>View Or Download Old Report: </span>
+                                <p>View Or Download Old Report: </p>
                                 <Link href={`/files/${file.report.replace(/\//g, ' ')}`} target="_blank" rel="noopener noreferrer" title="Download or view file">
-                                    {getFileIcon(file.report)}
+                                    <span className="text-gray-700 dark:text-gray-300"> {file.report.split('/').pop()}</span>{getFileIcon(file.report)}
                                 </Link>
                             </div>
-                        )}
+                        ) : <p>No Old Report! </p>}
+                        {errors.report && <div className="text-red-500 dark:text-red-400">{errors.report}</div>}
                         {uploadMessage && <div className="text-center my-2 text-gray-700 dark:text-gray-300">{uploadMessage}</div>}
                         {uploadProgress > 0 && (
                             <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                                 <div className="bg-indigo-500 h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
                             </div>
                         )}
-                        {errors.report && <div className="text-red-500 dark:text-red-400">{errors.report}</div>}
-
 
                         <button type="submit" disabled={processing} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-3xl text-white bg-indigo-500 hover:bg-indigo-700">
                             Mis a jour
                         </button>
+                        <InertiaLink href="/dashboard" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium ml-2 rounded-3xl text-white bg-gray-500 hover:bg-gray-700">
+                            Cancel
+                        </InertiaLink>
                     </form>
                 </div>
             </div>

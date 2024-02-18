@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FiscalFile extends Model
+class FiscalFilesLogs extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'fiscal_file_id',
+        'updated_by',
         'name',
-        'created_by',
         'cin_or_fiscal_number',
         'taxation_date',
         'tax_center',

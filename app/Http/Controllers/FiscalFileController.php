@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FiscalFile;
+use App\Models\FiscalFilesLogs;
 use App\Services\FiscalFileService;
 use App\Services\StorageService;
 use Illuminate\Http\Request;
@@ -21,6 +22,11 @@ class FiscalFileController extends Controller
         $this->fiscalFileService = $fiscalFileService;
     }
 
+
+    public function list()
+    {
+        return Inertia::render('Admin/FiscalFiles');
+    }
 
     public function all()
     {
@@ -50,6 +56,8 @@ class FiscalFileController extends Controller
             'report' => 'required|file|mimes:pdf,doc,docx,png,jpg',
         ]);
 
+        $validated['created_by'] = auth()->id();
+
         $fiscalFile = $this->fiscalFileService->storeFiscalFile($validated, $request->file('report'));
 
         return redirect()->route('dashboard')->with('success', 'Fiscal file created successfully!');
@@ -62,5 +70,30 @@ class FiscalFileController extends Controller
         return Inertia::render('Admin/EditFile', [
             'file' => $post,
         ]);
+    }
+
+    public function updateFiscalFile(Request $request, $id)
+    {
+        $validationRules = [
+            'name' => 'required|string|max:255',
+            'cin_or_fiscal_number' => 'required|string|max:255',
+            'taxation_date' => 'required|date|before_or_equal:today',
+            'tax_center' => 'required|string|max:255',
+            'tax_amount' => 'required|numeric',
+            'theme' => 'required|string|max:255',
+            'issuing_organism' => 'required|string|max:255',
+            'delivery_date_to_admin' => 'required|date|before_or_equal:today',
+            'receipt_date' => 'required|date|before_or_equal:today',
+        ];
+
+        if ($request->hasFile('report')) {
+            $validationRules['report'] = 'file|mimes:pdf,doc,docx,png,jpg';
+        }
+
+        $validatedData = $request->validate($validationRules);
+
+        $fiscalFile = $this->fiscalFileService->update($id, $validatedData, $request->file('report'));
+
+        return redirect()->route('dashboard')->with('success', 'Fiscal file updated successfully!');
     }
 }
