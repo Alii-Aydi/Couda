@@ -5,5 +5,5 @@ namespace App\Interfaces;
 interface FiscalFilesLogsServiceInterface
 {
     public function getAllLogs();
-    public function storeFiscalFileLog($fiscalFile);
+    public function storeFiscalFileLog($fiscalFile, $action);
 }

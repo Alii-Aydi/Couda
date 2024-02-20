@@ -8,35 +8,53 @@ import getFileIcon from '@/Utils/getFileIcon';
 import { Inertia } from '@inertiajs/inertia';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Archive } from '@mui/icons-material';
+import ConfirmationModal from './Descorations/ConfirmationModal ';
 
-export default function MaterialTable({ auth }) {
+export default function MaterialTable({ auth, filesPath, action }) {
     const [data, setData] = useState([]);
     const [userNames, setUserNames] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedRows, setSelectedRows] = useState({});
+
+    const fetchDataAndUpdateState = async () => {
+        try {
+            console.log(filesPath)
+            const response = await fetch(filesPath);
+            const data = await response.json();
+            setData(data.data);
+            const userIds = [...new Set(data.data.map(item => item.created_by))];
+            for (const id of userIds) {
+                try {
+                    const userResponse = await fetch(`/users/${id}`);
+                    const userData = await userResponse.json();
+                    setUserNames(prevNames => ({ ...prevNames, [id]: userData.name }));
+                } catch (error) {
+                    console.error(`Error fetching user ${id}:`, error);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     useEffect(() => {
-        fetch('/dashboard/fiscalFiles')
-            .then(response => response.json())
-            .then(data => {
-                setData(data.data);
-                const userIds = [...new Set(data.data.map(item => item.created_by))];
-                userIds.forEach(id => {
-                    fetch(`/users/${id}`)
-                        .then(response => response.json())
-                        .then(userData => {
-                            setUserNames(prevNames => ({ ...prevNames, [id]: userData.name }));
-                        })
-                        .catch(error => console.error(`Error fetching user ${id}:`, error));
-                });
-            })
-            .catch(error => console.error('Error fetching data:', error));
+        (async () => {
+            await fetchDataAndUpdateState();
+        })();
     }, []);
 
     const handleArchiveSelected = async (selectedRowIds) => {
-        const archivePromises = Object.keys(selectedRowIds).map(id => {
+        setSelectedRows(selectedRowIds);
+        setIsModalOpen(true);
+    };
+
+    const confirmArchive = async () => {
+        setIsModalOpen(false);
+        const archivePromises = Object.keys(selectedRows).map(id => {
             const row = data.find(row => row.id.toString() === id);
             if (!row) return null;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            return fetch(`/dashboard/fiscalFiles/${row.id}/archive`, {
+            return fetch(`/dashboard/fiscalFiles/${row.id}/${action}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,11 +66,14 @@ export default function MaterialTable({ auth }) {
         try {
             await Promise.all(archivePromises);
             console.info('All selected records archived successfully');
-            // Optionally, refresh the data here
+            setSelectedRows({});
+            await fetchDataAndUpdateState();
+            table.setRowSelection({});
         } catch (error) {
             console.error('Error archiving records:', error);
         }
     };
+
 
 
     const columns = useMemo(
@@ -164,7 +185,7 @@ export default function MaterialTable({ auth }) {
                         className="flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-300 text-white dark:bg-gray-900 dark:hover:bg-gray-500 transition-colors duration-150 rounded-lg focus:outline-none focus:shadow-outline"
                     >
                         <Archive className="h-5 w-5 mr-2" />
-                        Archive
+                        {action}
                     </button>
                 );
             }
@@ -195,8 +216,19 @@ export default function MaterialTable({ auth }) {
 
 
     return (
-        <MaterialReactTable
-            table={table}
-        />
+        <>
+            <MaterialReactTable
+                table={table}
+            />
+            {
+                isModalOpen && (
+                    <ConfirmationModal
+                        action={action}
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                        onConfirm={confirmArchive}
+                    />
+                )
+            }</>
     );
 }

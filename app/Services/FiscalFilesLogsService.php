@@ -23,7 +23,7 @@ class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
     }
 
 
-    public function storeFiscalFileLog($fiscalFile)
+    public function storeFiscalFileLog($fiscalFile, $action)
     {
         $userId = auth()->id();
 
@@ -40,6 +40,7 @@ class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
             'receipt_date' => $fiscalFile->receipt_date,
             'report' => $fiscalFile->report,
             'updated_by' => $userId,
+            'actions' => $action
         ]);
 
         return $fiscalFileLog;

@@ -33,7 +33,7 @@ export default function MaterialLogsTable({ auth }) {
             },
             {
                 accessorKey: 'created_at',
-                header: 'Updated At',
+                header: 'Logged At',
                 Cell: ({ cell }) => new Intl.DateTimeFormat('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -44,7 +44,11 @@ export default function MaterialLogsTable({ auth }) {
                 }).format(new Date(cell.getValue())),
                 size: 10,
             },
-
+            {
+                accessorKey: 'actions',
+                header: 'Action',
+                size: 10,
+            },
             {
                 accessorKey: 'name',
                 header: 'Name',

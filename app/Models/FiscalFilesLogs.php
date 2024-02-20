@@ -22,6 +22,7 @@ class FiscalFilesLogs extends Model
         'delivery_date_to_admin',
         'receipt_date',
         'report',
+        'actions'
     ];
 
     public function fiscalFile()

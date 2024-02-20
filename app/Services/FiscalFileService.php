@@ -30,8 +30,14 @@ class FiscalFileService implements FiscalFileServiceInterface
     }
     public function getAllFiles()
     {
-        $files = FiscalFile::all();
-        return $files;
+        $fiscalFiles = FiscalFile::where('archived', false)->get();
+        return $fiscalFiles;
+    }
+
+    public function getAllArchived()
+    {
+        $fiscalFiles = FiscalFile::where('archived', true)->get();
+        return $fiscalFiles;
     }
 
     public function findOne($id)
@@ -43,7 +49,7 @@ class FiscalFileService implements FiscalFileServiceInterface
     {
         $fiscalFile = $this->findOne($id);
 
-        $this->fiscalFilesLogsService->storeFiscalFileLog($fiscalFile);
+        $this->fiscalFilesLogsService->storeFiscalFileLog($fiscalFile, 'Modifiée');
 
         $validatedData['report'] = $this->storageService->storeCentralReport($reportFile, $validatedData['cin_or_fiscal_number']);
 
@@ -62,10 +68,28 @@ class FiscalFileService implements FiscalFileServiceInterface
         DB::beginTransaction();
         try {
 
-            $log = $this->fiscalFilesLogsService->storeFiscalFileLog($fiscalFile);
-            Log::alert($log);
-            $file = $this->delete($fiscalFile);
-            Log::alert($file);
+            $log = $this->fiscalFilesLogsService->storeFiscalFileLog($fiscalFile, 'Archivée');
+            $fiscalFile->archived = true;
+            $fiscalFile->save();
+            DB::commit();
+
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function restoreFile($fileId)
+    {
+        $fiscalFile = $this->findOne($fileId);
+
+        DB::beginTransaction();
+        try {
+
+            $log = $this->fiscalFilesLogsService->storeFiscalFileLog($fiscalFile, 'Restorée');
+            $fiscalFile->archived = false;
+            $fiscalFile->save();
             DB::commit();
 
             return true;

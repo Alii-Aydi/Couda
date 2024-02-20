@@ -35,6 +35,15 @@ class FiscalFileController extends Controller
         ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
     }
 
+    public function allArchived()
+    {
+        return response()->json([
+            'data' => $this->fiscalFileService->getAllArchived(),
+            'status' => 'success',
+            'message' => 'Archived Fiscal files retrieved successfully',
+        ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
+    }
+
     public function create(): Response
     {
         return Inertia::render('Admin/CreateFile');
@@ -103,6 +112,17 @@ class FiscalFileController extends Controller
             return response()->json(['sucess' => 'File archived successfully.']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to archive file.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            $this->fiscalFileService->restoreFile($id);
+
+            return response()->json(['sucess' => 'File restored successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to restore file.', 'error' => $e->getMessage()], 500);
         }
     }
 }

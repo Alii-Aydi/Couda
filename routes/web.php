@@ -37,10 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/createFile', [FiscalFileController::class, 'create'])->name('file.show');
     Route::post('/dashboard/createFile', [FiscalFileController::class, 'store'])->name('file.store');
     Route::get('/dashboard/fiscalFiles', [FiscalFileController::class, 'all'])->name('file.all');
+    Route::get('/dashboard/ArchivedfiscalFiles', [FiscalFileController::class, 'allArchived'])->name('file.allArchived');
     Route::get('/dashboard/fiscalFilesList', [FiscalFileController::class, 'list'])->name('file.list');
     Route::get('/dashboard/fiscalFiles/edit/{id}', [FiscalFileController::class, 'edit'])->name('edit.record');
     Route::post('/dashboard/fiscalFiles/edit/{id}', [FiscalFileController::class, 'updateFiscalFile'])->name('update.record'); //as put
-    Route::post('/dashboard/fiscalFiles/{id}/archive', [FiscalFileController::class, 'archive'])->name('file.archive');
+    Route::post('/dashboard/fiscalFiles/{id}/Archiver', [FiscalFileController::class, 'archive'])->name('file.archive');
+    Route::post('/dashboard/fiscalFiles/{id}/Restorer', [FiscalFileController::class, 'restore'])->name('file.restore');
     //Logs
     Route::get('/dashboard/fiscalFilesLogsList', [FiscalFilesLogsController::class, 'list'])->name('fileLogs.list');
     Route::get('/dashboard/fiscalFilesLogsAll', [FiscalFilesLogsController::class, 'all'])->name('fileLogs.all');

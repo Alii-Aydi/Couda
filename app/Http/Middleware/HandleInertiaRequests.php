@@ -17,10 +17,15 @@ class HandleInertiaRequests extends Middleware
     /**
      * Determine the current asset version.
      */
-    public function version(Request $request): string|null
+    public function version(Request $request): ?string
     {
-        return parent::version($request);
+        // Path to the Vite manifest file
+        $manifest = public_path('build/manifest.json');
+
+        // Check if the manifest exists and return its MD5 hash
+        return file_exists($manifest) ? md5_file($manifest) : null;
     }
+
 
     /**
      * Define the props that are shared by default.

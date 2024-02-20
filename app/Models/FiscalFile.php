@@ -23,6 +23,11 @@ class FiscalFile extends Model
         'report',
     ];
 
+    protected $casts = [
+        'archived' => 'boolean',
+    ];
+
+
     public function logs()
     {
         return $this->hasMany(FiscalFilesLogs::class);
