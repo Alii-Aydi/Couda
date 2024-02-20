@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\FiscalFilesLogsServiceInterface;
 use App\Models\FiscalFilesLogs;
 use App\Services\FiscalFilesLogsService;
 use App\Services\StorageService;
@@ -12,7 +13,7 @@ class FiscalFilesLogsController extends Controller
 {
     protected $fiscalFilesLogsService;
 
-    public function __construct(FiscalFilesLogsService $fiscalFilesLogsService)
+    public function __construct(FiscalFilesLogsServiceInterface $fiscalFilesLogsService)
     {
         $this->fiscalFilesLogsService = $fiscalFilesLogsService;
     }

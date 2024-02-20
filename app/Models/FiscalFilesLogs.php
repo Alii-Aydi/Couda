@@ -23,4 +23,14 @@ class FiscalFilesLogs extends Model
         'receipt_date',
         'report',
     ];
+
+    public function fiscalFile()
+    {
+        return $this->belongsTo(FiscalFile::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

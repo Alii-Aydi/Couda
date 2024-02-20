@@ -22,4 +22,14 @@ class FiscalFile extends Model
         'receipt_date',
         'report',
     ];
+
+    public function logs()
+    {
+        return $this->hasMany(FiscalFilesLogs::class);
+    }
+
+    public function createdByUser()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

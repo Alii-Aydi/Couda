@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use App\Models\FiscalFilesLogs;
-use App\Services\StorageService;
-use Illuminate\Http\Request;
+use App\Interfaces\FiscalFilesLogsServiceInterface;
+use App\Interfaces\StorageServiceInterface;
 
-class FiscalFilesLogsService
+class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
 {
     protected $storageService;
 
-    public function __construct(StorageService $storageService)
+    public function __construct(StorageServiceInterface $storageService)
     {
         $this->storageService = $storageService;
     }

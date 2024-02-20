@@ -43,4 +43,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function fiscalFiles()
+    {
+        return $this->hasMany(FiscalFile::class, 'created_by');
+    }
+
+    public function fiscalFilesLogs()
+    {
+        return $this->hasMany(FiscalFilesLogs::class);
+    }
 }

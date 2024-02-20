@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FiscalFile;
-use App\Models\FiscalFilesLogs;
-use App\Services\FiscalFileService;
+use App\Interfaces\FiscalFileServiceInterface;
 use App\Services\StorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +15,7 @@ class FiscalFileController extends Controller
 
     protected $fiscalFileService;
 
-    public function __construct(FiscalFileService $fiscalFileService)
+    public function __construct(FiscalFileServiceInterface $fiscalFileService)
     {
         $this->fiscalFileService = $fiscalFileService;
     }
@@ -95,5 +93,16 @@ class FiscalFileController extends Controller
         $fiscalFile = $this->fiscalFileService->update($id, $validatedData, $request->file('report'));
 
         return redirect()->route('dashboard')->with('success', 'Fiscal file updated successfully!');
+    }
+
+    public function archive($id)
+    {
+        try {
+            $this->fiscalFileService->archiveFile($id);
+
+            return response()->json(['sucess' => 'File archived successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to archive file.', 'error' => $e->getMessage()], 500);
+        }
     }
 }

@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { MenuItem } from '@mui/material';
+import { Button, MenuItem } from '@mui/material';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from '@mui/material';
@@ -30,6 +30,30 @@ export default function MaterialTable({ auth }) {
             })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
+
+    const handleArchiveSelected = async (selectedRowIds) => {
+        const archivePromises = Object.keys(selectedRowIds).map(id => {
+            const row = data.find(row => row.id.toString() === id);
+            if (!row) return null;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            return fetch(`/dashboard/fiscalFiles/${row.id}/archive`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+            });
+        });
+
+        try {
+            await Promise.all(archivePromises);
+            console.info('All selected records archived successfully');
+            // Optionally, refresh the data here
+        } catch (error) {
+            console.error('Error archiving records:', error);
+        }
+    };
+
 
     const columns = useMemo(
         () => [
@@ -127,6 +151,25 @@ export default function MaterialTable({ auth }) {
                 <div className='flex'><Archive className='h-5 pr-2 text-gray-500'></Archive> Archiver</div>
             </MenuItem>,
         ],
+        renderTopToolbarCustomActions: ({ table }) => {
+            const rowSelection = table.getState().rowSelection;
+            const selectedRows = table.getSelectedRowModel().rows;
+            if (selectedRows.length > 0) {
+                return (
+                    <button
+                        onClick={() => handleArchiveSelected(selectedRows.reduce((acc, row) => {
+                            acc[row.original.id] = true;
+                            return acc;
+                        }, {}))}
+                        className="flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-300 text-white dark:bg-gray-900 dark:hover:bg-gray-500 transition-colors duration-150 rounded-lg focus:outline-none focus:shadow-outline"
+                    >
+                        <Archive className="h-5 w-5 mr-2" />
+                        Archive
+                    </button>
+                );
+            }
+            return null;
+        },
     });
 
     const handleEdit = (id) => {

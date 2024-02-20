@@ -28,7 +28,7 @@ export default function MaterialLogsTable({ auth }) {
         () => [
             {
                 accessorKey: 'fiscal_file_id',
-                header: 'ID',
+                header: 'File ID',
                 size: 10,
             },
             {
@@ -118,22 +118,16 @@ export default function MaterialLogsTable({ auth }) {
         [userNames],
     );
 
-    console.log(userNames)
-
-    //console.log(data)
-
     const table = useMaterialReactTable({
         columns,
         data,
         enableSorting: true,
-        enableRowSelection: true,
     });
 
 
     return (
         <MaterialReactTable
             table={table}
-            style={{ maxWidth: '100vw' }}
         />
     );
 }
