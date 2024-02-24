@@ -23,7 +23,7 @@ class FiscalFileController extends Controller
 
     public function list()
     {
-        return Inertia::render('Admin/FiscalFiles');
+        return Inertia::render('Admin/FiscalFiles/FiscalFiles');
     }
 
     public function all()
@@ -46,7 +46,7 @@ class FiscalFileController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Admin/CreateFile');
+        return Inertia::render('Admin/FiscalFiles/CreateFile');
     }
     public function store(Request $request)
     {
@@ -74,7 +74,7 @@ class FiscalFileController extends Controller
     {
         $post = $this->fiscalFileService->findOne($id);
 
-        return Inertia::render('Admin/EditFile', [
+        return Inertia::render('Admin/FiscalFiles/EditFile', [
             'file' => $post,
         ]);
     }

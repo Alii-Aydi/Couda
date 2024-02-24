@@ -21,7 +21,7 @@ class FiscalFilesLogsController extends Controller
 
     public function list()
     {
-        return Inertia::render('Admin/FiscalFilesLogs');
+        return Inertia::render('Admin/FiscalFiles/FiscalFilesLogs');
     }
 
     public function all()

@@ -28,6 +28,10 @@ Route::get('/dashboard', function () {
     return Inertia::render('Admin/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/dashboard/makepv', function () {
+    return Inertia::render('Admin/ProcesVerbal/CreatePV');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     //Auth
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
