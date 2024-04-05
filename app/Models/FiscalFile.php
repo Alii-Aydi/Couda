@@ -20,7 +20,6 @@ class FiscalFile extends Model
         'issuing_organism',
         'delivery_date_to_admin',
         'receipt_date',
-        'report',
     ];
 
     protected $casts = [
@@ -31,6 +30,11 @@ class FiscalFile extends Model
     public function logs()
     {
         return $this->hasMany(FiscalFilesLogs::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
     }
 
     public function createdByUser()

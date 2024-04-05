@@ -23,35 +23,63 @@ class FiscalFileService implements FiscalFileServiceInterface
     }
 
 
-    public function storeFiscalFile($validatedData, $reportFile = null)
+    public function storeFiscalFile($validatedData, $reportFiles = [])
     {
-        $validatedData['report'] = $this->storageService->storeCentralReport($reportFile, $validatedData['cin_or_fiscal_number']);
-        return FiscalFile::create($validatedData);
+        $fiscalFile = FiscalFile::create($validatedData);
+        if ($reportFiles) {
+            foreach ($reportFiles as $reportFile) {
+                $reportPath = $this->storageService->storeCentralReport($reportFile, $validatedData['cin_or_fiscal_number']);
+                $fiscalFile->reports()->create(['file_path' => $reportPath, 'desc' => $reportFile->getClientOriginalName()]);
+            }
+        }
+
+        return $fiscalFile;
     }
+
+
     public function getAllFiles()
     {
-        $fiscalFiles = FiscalFile::where('archived', false)->get();
+        $fiscalFiles = FiscalFile::with('reports') // Eager load center reports
+            ->where('archived', false)
+            ->orderBy('created_at', 'desc')
+            ->get();
         return $fiscalFiles;
     }
 
+
     public function getAllArchived()
     {
-        $fiscalFiles = FiscalFile::where('archived', true)->get();
+        $fiscalFiles = FiscalFile::with('reports') // Eager load center reports
+            ->where('archived', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
         return $fiscalFiles;
     }
 
     public function findOne($id)
     {
-        return FiscalFile::findOrFail($id);
+        return FiscalFile::with('reports')->findOrFail($id);
     }
 
-    public function update($id, $validatedData, $reportFile = null)
+    public function update($id, $validatedData, $reportFiles = [], $deletedFiles = [])
     {
         $fiscalFile = $this->findOne($id);
 
         $this->fiscalFilesLogsService->storeFiscalFileLog($fiscalFile, 'Modifiée');
 
-        $validatedData['report'] = $this->storageService->storeCentralReport($reportFile, $validatedData['cin_or_fiscal_number']);
+        if ($reportFiles) {
+            Log::alert($reportFiles);
+            foreach ($reportFiles as $reportFile) {
+                $reportPath = $this->storageService->storeCentralReport($reportFile, $validatedData['cin_or_fiscal_number']);
+                $fiscalFile->reports()->create(['file_path' => $reportPath, 'desc' => $reportFile->getClientOriginalName()]);
+            }
+        }
+
+        if ($deletedFiles) {
+            foreach ($deletedFiles as $deletedFile) {
+                $fiscalFile->reports()->where('id', $deletedFile['id'])->update(['fiscal_file_id' => null]);
+            }
+        }
 
         return $fiscalFile->update($validatedData);
     }

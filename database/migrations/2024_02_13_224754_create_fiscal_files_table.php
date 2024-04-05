@@ -26,6 +26,8 @@ class CreateFiscalFilesTable extends Migration
 
     public function down()
     {
+        Schema::dropIfExists('reports');
+        Schema::dropIfExists('fiscal_file_logs');
         Schema::dropIfExists('fiscal_files');
     }
 }

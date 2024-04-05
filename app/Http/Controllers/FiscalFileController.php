@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\FiscalFileServiceInterface;
+use App\Models\FiscalFile;
 use App\Services\StorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -60,7 +61,7 @@ class FiscalFileController extends Controller
             'issuing_organism' => 'required|string|max:255',
             'delivery_date_to_admin' => 'required|date|before_or_equal:today',
             'receipt_date' => 'required|date|before_or_equal:today',
-            'report' => 'required|file|mimes:pdf,doc,docx,png,jpg',
+            'report.*' => 'required|file|mimes:pdf,doc,docx,png,jpg',
         ]);
 
         $validated['created_by'] = auth()->id();
@@ -94,12 +95,12 @@ class FiscalFileController extends Controller
         ];
 
         if ($request->hasFile('report')) {
-            $validationRules['report'] = 'file|mimes:pdf,doc,docx,png,jpg';
+            $validationRules['report.*'] = 'file|mimes:pdf,doc,docx,png,jpg';
         }
 
         $validatedData = $request->validate($validationRules);
 
-        $fiscalFile = $this->fiscalFileService->update($id, $validatedData, $request->file('report'));
+        $fiscalFile = $this->fiscalFileService->update($id, $validatedData, $request->file('report'), json_decode($request->get('deletedFiles'), true));
 
         return redirect()->route('dashboard')->with('success', 'Fiscal file updated successfully!');
     }
@@ -124,5 +125,13 @@ class FiscalFileController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to restore file.', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function show($id)
+    {
+        $fiscalFile = $this->fiscalFileService->findOne($id);
+        return Inertia::render('Admin/FiscalFiles/Show', [
+            'file' => $fiscalFile->load('reports'),
+        ]);
     }
 }

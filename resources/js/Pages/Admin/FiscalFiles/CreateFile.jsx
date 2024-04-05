@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useDropzone } from 'react-dropzone';
-import { FaFileAlt } from 'react-icons/fa';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import getFileIcon from '@/Utils/getFileIcon';
 
 export default function CreateFiscalFile({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -15,37 +15,43 @@ export default function CreateFiscalFile({ auth }) {
         issuing_organism: '',
         delivery_date_to_admin: '',
         receipt_date: '',
-        report: null,
+        report: [],
     });
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadMessage, setUploadMessage] = useState('');
-    const [droppedFile, setDroppedFile] = useState(null);
+    const [droppedFiles, setDroppedFiles] = useState([]);
 
     function handleChange(e) {
         setData(e.target.name, e.target.value);
     }
 
     function handleDrop(acceptedFiles) {
-        const file = acceptedFiles[0];
-        setData('report', file);
-        setDroppedFile({
+        // Assuming you're using React hooks like useState
+        const filesData = acceptedFiles.map(file => ({
             name: file.name,
-        });
-        setUploadProgress(0); // Reset progress
+        }));
+        setData('report', acceptedFiles);
+        setDroppedFiles(filesData);
+        setUploadProgress(0);
         setUploadMessage("Uploading...");
 
-        // Simulate an upload process
-        const simulateUpload = setInterval(() => {
-            setUploadProgress(prevProgress => {
-                if (prevProgress >= 100) {
-                    clearInterval(simulateUpload);
-                    setUploadMessage("Upload Successful!");
-                    return 100;
-                }
-                return prevProgress + 10;
-            });
-        }, 100);
+        // Simulate an upload process for each file
+        acceptedFiles.forEach((file, index) => {
+            const simulateUpload = setInterval(() => {
+                setUploadProgress(prevProgress => {
+                    if (prevProgress >= 100) {
+                        clearInterval(simulateUpload);
+                        if (index === acceptedFiles.length - 1) {
+                            setUploadMessage("Upload Successful!");
+                        }
+                        return 100;
+                    }
+                    return prevProgress + 10;
+                });
+            }, 100);
+        });
     }
+
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -55,6 +61,7 @@ export default function CreateFiscalFile({ auth }) {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: handleDrop,
         accept: 'application/pdf, image/*',
+        multiple: true,
     });
 
     return (
@@ -178,13 +185,22 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div {...getRootProps()} className={`border-dashed border-4 ${isDragActive ? 'border-indigo-500 bg-indigo-100' : 'border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800'} text-center py-8 rounded-3xl h-60 flex justify-center items-center`}>
-                            <input {...getInputProps()} />
-                            {droppedFile ? (<div className="flex items-center justify-center">
-                                <FaFileAlt className="mr-2" size="1.5em" />
-                                <p>{droppedFile.name} is ready to be uploaded.</p>
-                            </div>) : isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>}
+                            <input {...getInputProps()} multiple />
+                            {droppedFiles.length ? (
+                                <div className="flex flex-col items-center justify-center">
+                                    {droppedFiles.map((file, index) => (
+                                        <div key={index} className="flex items-center justify-center">
+                                            {getFileIcon(file.name)}
+                                            <p>{file.name} is ready to be uploaded.</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>}
                         </div>
-                        {errors.report && <div className="text-red-500">{errors.report}</div>}
+                        {Object.keys(errors).filter(errorKey => errorKey.includes('report.')).map((errorKey, index) => (
+                            <div key={index} className="text-red-500">{errors[errorKey]}</div>
+                        ))}
+
                         {uploadMessage && <div className="text-center my-2">{uploadMessage}</div>}
                         {uploadProgress > 0 && (
                             <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">

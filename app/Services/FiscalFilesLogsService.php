@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\FiscalFilesLogs;
 use App\Interfaces\FiscalFilesLogsServiceInterface;
 use App\Interfaces\StorageServiceInterface;
+use Illuminate\Support\Facades\Log;
 
 class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
 {
@@ -18,7 +19,7 @@ class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
 
     public function getAllLogs()
     {
-        $files = FiscalFilesLogs::all();
+        $files = FiscalFilesLogs::orderBy('updated_at', 'desc')->get();
         return $files;
     }
 
@@ -38,10 +39,15 @@ class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
             'issuing_organism' => $fiscalFile->issuing_organism,
             'delivery_date_to_admin' => $fiscalFile->delivery_date_to_admin,
             'receipt_date' => $fiscalFile->receipt_date,
-            'report' => $fiscalFile->report,
             'updated_by' => $userId,
             'actions' => $action
         ]);
+
+        // Get the IDs of the old reports associated with the fiscal file
+        $oldReportIds = $fiscalFile->reports->pluck('id')->toArray();
+
+        // Attach the old reports to the newly created fiscal file log
+        $fiscalFileLog->reports()->sync($oldReportIds);
 
         return $fiscalFileLog;
     }

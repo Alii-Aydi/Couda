@@ -21,13 +21,17 @@ class FiscalFilesLogs extends Model
         'issuing_organism',
         'delivery_date_to_admin',
         'receipt_date',
-        'report',
         'actions'
     ];
 
     public function fiscalFile()
     {
         return $this->belongsTo(FiscalFile::class);
+    }
+
+    public function reports()
+    {
+        return $this->belongsToMany(Report::class, 'fiscal_file_log_report', 'fiscal_file_log_id', 'report_id');
     }
 
     public function user()

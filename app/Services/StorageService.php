@@ -10,15 +10,12 @@ class StorageService implements StorageServiceInterface
 {
     public function storeCentralReport($reportFile, $cin)
     {
-        if ($reportFile) {
-            $filename = time() . '_' . $reportFile->getClientOriginalName();
-            $filename = str_replace(' ', '_', $filename);
-            $filePath = 'private/reports/centre_report/' . $cin . '/' . $filename;
-            Storage::put($filePath, file_get_contents($reportFile));
+        $filename = time() . '_' . $reportFile->getClientOriginalName();
+        $filename = str_replace(' ', '_', $filename);
+        $filePath = 'private/reports/centre_report/' . $cin . '/' . $filename;
+        Storage::put($filePath, file_get_contents($reportFile));
 
-            return $filePath;
-        }
-        return "none";
+        return $filePath;
     }
 
     public function getCentralReport($filename)

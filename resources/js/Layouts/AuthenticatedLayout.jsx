@@ -1,7 +1,6 @@
 import { ThemeProvider } from '@/Components/Contexts/ThemeContext';
 import Flash from '@/Components/Descorations/Flash';
 import { SidebarWithLogo } from '@/Components/Pagination/SideBar';
-import { useState } from 'react';
 
 export default function Authenticated({ user, children }) {
     return (

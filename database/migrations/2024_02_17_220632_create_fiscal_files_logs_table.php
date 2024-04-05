@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('issuing_organism');
             $table->date('delivery_date_to_admin');
             $table->date('receipt_date');
-            $table->string('report');
             $table->timestamps();
 
             $table->foreign('fiscal_file_id')->references('id')->on('fiscal_files')->onDelete('cascade');

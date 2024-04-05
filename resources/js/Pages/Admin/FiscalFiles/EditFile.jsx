@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { Link } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import { FaFileAlt } from 'react-icons/fa';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import ImageIcon from '@mui/icons-material/Image';
-import DescriptionIcon from '@mui/icons-material/Description';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { InertiaLink } from '@inertiajs/inertia-react';
-
+import getFileIcon from '@/Utils/getFileIcon';
+import { Checkbox, FormControlLabel, IconButton, Snackbar } from '@mui/material';
+import { Delete, Undo } from '@mui/icons-material';
+import { Inertia } from '@inertiajs/inertia';
 export default function EditFiscalFile({ auth, file }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         name: file.name,
         cin_or_fiscal_number: file.cin_or_fiscal_number,
         taxation_date: file.taxation_date,
@@ -21,23 +19,39 @@ export default function EditFiscalFile({ auth, file }) {
         issuing_organism: file.issuing_organism,
         delivery_date_to_admin: file.delivery_date_to_admin,
         receipt_date: file.receipt_date,
-        report: null,
+        report: [],
     });
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadMessage, setUploadMessage] = useState('');
-    const [droppedFile, setDroppedFile] = useState(null);
+    const [droppedFiles, setDroppedFiles] = useState([]);
+    const [oldFiles, setOldFiles] = useState(file.reports);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [undoActive, setUndoActive] = useState(false);
+    const [deletedFiles, setDeletedFiles] = useState([]);
 
-    // Helper function to determine the icon based on the file extension
-    const getFileIcon = (filePath) => {
-        if (filePath.endsWith('.pdf')) {
-            return <PictureAsPdfIcon />;
-        } else if (filePath.match(/\.(jpeg|jpg|gif|png)$/)) {
-            return <ImageIcon />;
-        } else if (filePath.endsWith('none')) {
-            return ''
+    const handleCheckboxChange = (e, report) => {
+        if (e.target.checked) {
+            setSelectedFiles(prevState => [...prevState, report]);
         } else {
-            return <DescriptionIcon />;
+            setSelectedFiles(prevState => prevState.filter(r => r.id !== report.id));
         }
+    };
+
+    // handleDeleteFile function
+    const handleDeleteFile = () => {
+        const updatedFiles = oldFiles.filter(file => !selectedFiles.some(selected => selected.id === file.id));
+        setDeletedFiles(prevDeletedFiles => [...prevDeletedFiles, ...selectedFiles]);
+        setSelectedFiles([]);
+        setUndoActive(true);
+        setOldFiles(updatedFiles);
+    };
+
+    // handleUndoDelete function
+    const handleUndoDelete = () => {
+        const updatedFiles = [...oldFiles, ...deletedFiles];
+        setDeletedFiles([]);
+        setUndoActive(false);
+        setOldFiles(updatedFiles);
     };
 
     function handleChange(e) {
@@ -45,39 +59,51 @@ export default function EditFiscalFile({ auth, file }) {
     }
 
     function handleDrop(acceptedFiles) {
-        const file = acceptedFiles[0];
-        setData('report', file);
-        setDroppedFile({
+        const filesData = acceptedFiles.map(file => ({
             name: file.name,
-        });
-        setUploadProgress(0); // Reset progress
+        }));
+        setData(prevData => ({
+            ...prevData,
+            report: [...prevData.report, ...acceptedFiles]
+        }));
+        setDroppedFiles(filesData);
+        setUploadProgress(0);
         setUploadMessage("Uploading...");
 
-        // Simulate an upload process
-        const simulateUpload = setInterval(() => {
-            setUploadProgress(prevProgress => {
-                if (prevProgress >= 100) {
-                    clearInterval(simulateUpload);
-                    setUploadMessage("Upload Successful!");
-                    return 100;
-                }
-                return prevProgress + 10;
-            });
-        }, 100);
+        // Simulate an upload process for each file
+        acceptedFiles.forEach((file, index) => {
+            const simulateUpload = setInterval(() => {
+                setUploadProgress(prevProgress => {
+                    if (prevProgress >= 100) {
+                        clearInterval(simulateUpload);
+                        if (index === acceptedFiles.length - 1) {
+                            setUploadMessage("Upload Successful!");
+                        }
+                        return 100;
+                    }
+                    return prevProgress + 10;
+                });
+            }, 100);
+        });
     }
 
     function handleSubmit(e) {
         e.preventDefault();
-        let formData = new FormData();
+        const formData = new FormData();
         Object.keys(data).forEach(key => {
-            if (data.report && key === 'report') {
-                formData.append(key, data[key], data[key].name);
+            if (key === 'report') {
+                data[key].forEach((file, index) => {
+                    formData.append(`${key}[${index}]`, file, file.name);
+                });
             } else {
                 formData.append(key, data[key]);
             }
         });
+        if (deletedFiles.length > 0) {
+            formData.append('deletedFiles', JSON.stringify(deletedFiles));
+        }
         formData.append('_method', 'PUT');
-        post(route('update.record', file.id), formData, {
+        Inertia.post(route('update.record', file.id), formData, {
             forceFormData: true,
         });
     }
@@ -205,21 +231,82 @@ export default function EditFiscalFile({ auth, file }) {
 
                         {/* Dropzone and Existing File Display */}
                         <div {...getRootProps()} className={`border-dashed border-4 ${isDragActive ? 'border-indigo-500 bg-indigo-100' : 'border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800'} text-center py-8 rounded-3xl h-60 flex justify-center items-center`}>
-                            <input {...getInputProps()} />
-                            {droppedFile ? (<div className="flex items-center justify-center">
-                                <FaFileAlt className="mr-2" size="1.5em" />
-                                <p>{droppedFile.name} is ready to be uploaded.</p>
-                            </div>) : isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>}
+                            <input {...getInputProps()} multiple />
+                            {droppedFiles.length ? (
+                                <div className="flex flex-col items-center justify-center">
+                                    {droppedFiles.map((file, index) => (
+                                        <div key={index} className="flex items-center justify-center">
+                                            {getFileIcon(file.name)}
+                                            <p>{file.name} is ready to be uploaded.</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>}
                         </div>
-                        {file.report && file.report != 'none' ? (
+                        {Object.keys(errors).filter(errorKey => errorKey.includes('report.')).map((errorKey, index) => (
+                            <div key={index} className="text-red-500">{errors[errorKey]}</div>
+                        ))}
+
+                        {oldFiles && oldFiles.length > 0 ? (
                             <div className="text-gray-700 dark:text-gray-300">
-                                <p>View Or Download Old Report: </p>
-                                <Link href={`/files/${file.report.replace(/\//g, ' ')}`} target="_blank" rel="noopener noreferrer" title="Download or view file">
-                                    <span className="text-gray-700 dark:text-gray-300"> {file.report.split('/').pop()}</span>{getFileIcon(file.report)}
-                                </Link>
+                                <p>View Download Or Delete Old Report(s): </p>
+                                {oldFiles.map((report, index) => (
+                                    <div key={index} className="flex items-center">
+                                        <Checkbox
+                                            value={report.id}
+                                            checked={selectedFiles.some(selected => selected.id === report.id)}
+                                            onChange={(e) => handleCheckboxChange(e, report)}
+                                            color="primary"
+                                        />
+                                        <Link href={`/files/${report.file_path.replace(/\//g, ' ')}`} target="_blank" rel="noopener noreferrer" title="Download or view file">
+                                            {getFileIcon(report.file_path)}<span className="text-gray-700 dark:text-gray-300"> {report.desc}</span>
+                                        </Link>
+                                    </div>
+                                ))}
+
+                                {/* Delete button with label message */}
+                                {selectedFiles.length > 0 && (
+                                    <FormControlLabel
+                                        control={<Delete color='warning' />}
+                                        label={`Delete ${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''}`}
+                                        labelPlacement="end"
+                                        onClick={handleDeleteFile}
+                                        style={{ cursor: 'pointer', marginTop: '1rem' }}
+                                    />
+                                )}
+                                {/* Snackbar for Undo option */}
+                                <Snackbar
+                                    open={undoActive}
+                                    message="File(s) deleted"
+                                    action={
+                                        <IconButton
+                                            size="small"
+                                            color="inherit"
+                                            onClick={handleUndoDelete}
+                                        >
+                                            <Undo fontSize="small" />
+                                        </IconButton>
+                                    }
+                                />
                             </div>
-                        ) : <p>No Old Report! </p>}
-                        {errors.report && <div className="text-red-500 dark:text-red-400">{errors.report}</div>}
+                        ) : (
+                            <>
+                                <p>No Old Reports!</p>
+                                {/* Snackbar for Undo option */}
+                                <Snackbar
+                                    open={undoActive}
+                                    message="File(s) deleted"
+                                    action={
+                                        <IconButton
+                                            size="small"
+                                            color="inherit"
+                                            onClick={handleUndoDelete}
+                                        >
+                                            <Undo fontSize="small" />
+                                        </IconButton>
+                                    }
+                                /></>
+                        )}
                         {uploadMessage && <div className="text-center my-2 text-gray-700 dark:text-gray-300">{uploadMessage}</div>}
                         {uploadProgress > 0 && (
                             <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">

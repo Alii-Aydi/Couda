@@ -18,7 +18,6 @@ export default function MaterialTable({ auth, filesPath, action }) {
 
     const fetchDataAndUpdateState = async () => {
         try {
-            console.log(filesPath)
             const response = await fetch(filesPath);
             const data = await response.json();
             setData(data.data);
@@ -129,18 +128,23 @@ export default function MaterialTable({ auth, filesPath, action }) {
                 size: 10,
             },
             {
-                accessorKey: 'report',
+                accessorKey: 'reports',
                 header: 'Center Report',
                 Cell: ({ cell }) => {
-                    let filename = cell.getValue();
-                    filename = filename.replace(/\//g, ' ');
-                    const fileUrl = `/files/${filename}`;
-                    const Icon = getFileIcon(filename);
-
+                    const files = cell.getValue();
                     return (
-                        <Link href={fileUrl} target="_blank" rel="noopener noreferrer" title="Download or view file">
-                            {Icon}
-                        </Link>
+                        <>
+                            {files.map((filename, index) => {
+                                const name = filename.file_path.replace(/\//g, ' ');
+                                const fileUrl = `/files/${name}`;
+                                const Icon = getFileIcon(name);
+                                return (
+                                    <Link key={index} href={fileUrl} target="_blank" rel="noopener noreferrer" title="Download or view file">
+                                        {Icon}
+                                    </Link>
+                                );
+                            })}
+                        </>
                     );
                 },
                 size: 10,
@@ -155,8 +159,6 @@ export default function MaterialTable({ auth, filesPath, action }) {
         ],
         [userNames],
     );
-
-    //console.log(data)
 
     const table = useMaterialReactTable({
         columns,
@@ -191,6 +193,14 @@ export default function MaterialTable({ auth, filesPath, action }) {
             }
             return null;
         },
+        muiTableBodyRowProps: ({ row }) => ({
+            //implement row selection click events manually
+            onClick: () =>
+                Inertia.visit(`/dashboard/fiscalFiles/${row.original.id}`),
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
     });
 
     const handleEdit = (id) => {
