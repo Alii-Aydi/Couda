@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiTrash2, FiEye, FiList } from 'react-icons/fi';
+import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiAlertCircle, FiEye, FiList } from 'react-icons/fi';
 import { useThemeMode } from '@/Components/Contexts/ThemeContext';
 import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
@@ -57,6 +57,7 @@ export function SidebarWithLogo() {
                                     <li className="p-2"><Link href="/dashboard/fiscalFilesList" className="block"><FiEye className="inline-block mr-2" /> Consulter</Link></li>
                                     <li className="p-2"><Link href="/dashboard/createFile" className="block"><FiPlus className="inline-block mr-2" /> Create</Link></li>
                                     <li className="p-2"><Link href="/dashboard/fiscalFilesLogsList" className="block"><FiList className="inline-block mr-2" /> Logs</Link></li>
+                                    {/* <li className="p-2"><Link href="/dashboard/fiscalFiles/reclamation" className="block"><FiAlertCircle className="inline-block mr-2" /> Reclamation</Link></li> */}
                                 </ul>
                             )}
                         </li>

@@ -1,6 +1,6 @@
 // components/FiscalFileShow.js
 import React from 'react';
-import { Link } from '@inertiajs/inertia-react';
+import { Link } from '@inertiajs/react';
 import { Button, CardContent, Paper, Typography, Card } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
@@ -12,6 +12,9 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom"
 import Captions from "yet-another-react-lightbox/plugins/captions";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import { useEffect, useState } from 'react';
+import { FiAlertCircle, FiPenTool } from 'react-icons/fi';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { Archive } from '@mui/icons-material';
 
 const FiscalFileShow = ({ auth, file }) => {
     const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -49,11 +52,18 @@ const FiscalFileShow = ({ auth, file }) => {
         <AuthenticatedLayout user={auth.user}>
             <Head title={file.cin_or_fiscal_number} />
             <div className="py-12">
-                <h1 className='p-4 text-4xl'>Show page</h1>
+                <h1 className='p-4 text-4xl'>Fiscal File N°{file.id}</h1>
                 <div className="p-7 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div className="container mx-auto mt-8">
                         <Paper elevation={3} className="p-4 dark:bg-gray-800">
-                            <Typography variant="h4" gutterBottom className="dark:text-white">{file.name}</Typography>
+                            <div className="flex justify-between">
+                                <Typography variant="h4" gutterBottom className="dark:text-white">{file.name}</Typography>
+                                <div className="flex justify-between p-2">
+                                    <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Archiver <Archive className="inline-block text-gray-500 size-5" /></Link>
+                                    <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Edit <PencilSquareIcon className="inline-block text-blue-500 size-5" /></Link>
+                                    <Link href={`/dashboard/fiscalFiles/${file.id}/reclamation`} className="block p-2">Reclamation <FiAlertCircle className="inline-block text-red-500 size-5" /></Link>
+                                </div>
+                            </div>
                             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-4">
                                 <Card>
                                     <CardContent>

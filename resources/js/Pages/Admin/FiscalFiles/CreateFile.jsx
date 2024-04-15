@@ -5,7 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import getFileIcon from '@/Utils/getFileIcon';
 
 export default function CreateFiscalFile({ auth }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset, progress } = useForm({
         name: '',
         cin_or_fiscal_number: '',
         taxation_date: '',

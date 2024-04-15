@@ -204,14 +204,12 @@ export default function MaterialTable({ auth, filesPath, action }) {
     });
 
     const handleEdit = (id) => {
-        console.info(`Edit ID: ${id}`);
         Inertia.visit(`/dashboard/fiscalFiles/edit/${id}`, {
             method: 'get',
         });
     };
 
     const handleDelete = (id) => {
-        console.info(`Delete ID: ${id}`)
         fetch(`/api/records/${id}`, {
             method: 'DELETE',
         })

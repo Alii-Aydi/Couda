@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     FiscalFileController,
     FiscalFilesLogsController,
     ProfileController,
+    ReclamationController,
     StorageController,
     UserController
 };
@@ -54,6 +55,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/fiscalFiles/{id}/Archiver', [FiscalFileController::class, 'archive'])->name('file.archive');
         Route::post('/fiscalFiles/{id}/Restorer', [FiscalFileController::class, 'restore'])->name('file.restore');
         Route::get('/fiscalFiles/{id}', [FiscalFileController::class, 'show'])->name('file.show');
+
+        // Reclamations
+        Route::get('/fiscalFiles/{id}/reclamation', [ReclamationController::class, 'create']);
+        Route::post('/fiscalFiles/{id}/reclamation', [ReclamationController::class, 'store']);
 
         // Logs
         Route::get('/fiscalFilesLogsList', [FiscalFilesLogsController::class, 'list'])->name('fileLogs.list');
