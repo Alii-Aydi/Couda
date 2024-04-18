@@ -4,14 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttributesReclamationTable extends Migration
+class CreateReportsReclamationTable extends Migration
 {
     public function up()
     {
-        Schema::create('attributes_reclamation', function (Blueprint $table) {
+        Schema::create('reports_reclamation', function (Blueprint $table) {
             $table->id();
-            $table->string('attribute');
-            $table->string('reason');
+            $table->string('name');
+            $table->string('description')->nullable();
             $table->foreignId('reclamation_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
@@ -19,6 +19,6 @@ class CreateAttributesReclamationTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('attributes_reclamation');
+        Schema::dropIfExists('reports_reclamation');
     }
 }

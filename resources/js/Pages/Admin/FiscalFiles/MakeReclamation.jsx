@@ -73,8 +73,9 @@ const MakeReclamation = ({ auth, file }) => {
             return;
         }
 
-        console.log('Form submitted:', data, reasons, newReports);
-        Inertia.post(`/dashboard/fiscalFiles/${file.id}/reclamation`, { data, reasons, newReports });
+        const id = file.id;
+
+        Inertia.post(`/dashboard/fiscalFiles/${file.id}/reclamation`, { reasons, newReports, id });
     };
 
     return (

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\{
+    AgendaController,
     FiscalFileController,
     FiscalFilesLogsController,
     ProfileController,
@@ -63,6 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Logs
         Route::get('/fiscalFilesLogsList', [FiscalFilesLogsController::class, 'list'])->name('fileLogs.list');
         Route::get('/fiscalFilesLogsAll', [FiscalFilesLogsController::class, 'all'])->name('fileLogs.all');
+
+        // Agenda
+        Route::get('/agenda', [AgendaController::class, 'show']);
     });
 
     // Users

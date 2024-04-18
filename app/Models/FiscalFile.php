@@ -41,4 +41,9 @@ class FiscalFile extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function reclamations()
+    {
+        return $this->hasMany(Reclamation::class);
+    }
 }

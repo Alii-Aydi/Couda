@@ -1,0 +1,52 @@
+.dark .rs-calendar-table-cell:hover .rs-calendar-table-cell-content {
+    background-color: #3730a3;
+}
+
+.dark .rs-calendar-table-cell:focus .rs-calendar-table-cell-content {
+    background-color: #3730a3;
+}
+
+.rs-calendar-table-cell,
+.rs-calendar-table-cell-content {
+    height: 150px !important;
+}
+
+.dark .rs-anim-fade.rs-anim-in.rs-popover {
+    background-color: #1f2937;
+}
+
+.bg-gray {
+    background-color: rgba(242, 242, 242, 0.3);
+}
+
+.dark .bg-gray {
+    background-color: #111827;
+}
+
+.dark .rs-calendar-header-title {
+    color: #ffff;
+}
+
+.dark .rs-calendar-header-backward {
+    color: #ffff;
+}
+
+.dark .rs-calendar-header-forward {
+    color: #ffff;
+}
+
+.dark .rs-calendar-btn-today {
+    color: #000;
+}
+
+.dark .rs-calendar-month-dropdown .rs-calendar-month-dropdown-content {
+    background-color: #1f2937;
+}
+
+.rs-calendar-month-dropdown-scroll {
+    height: 970px !important;
+}
+
+.dark .rs-calendar-btn-close {
+    background-color: #111827;
+}

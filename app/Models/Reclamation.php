@@ -8,4 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Reclamation extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'fiscal_file_id',
+        'created_by',
+        'contact_destination',
+    ];
+
+    // Define the relationship with AttributesReclamation model
+    public function attributesReclamations()
+    {
+        return $this->hasMany(AttributesReclamation::class);
+    }
+
+    public function reportsReclamations()
+    {
+        return $this->hasMany(ReportsReclamation::class);
+    }
 }
