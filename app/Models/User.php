@@ -53,4 +53,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(FiscalFilesLogs::class);
     }
+
+    public function signature()
+    {
+        return $this->hasOne(Signature::class);
+    }
 }

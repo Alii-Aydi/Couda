@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiAlertCircle, FiEye, FiList, FiCalendar } from 'react-icons/fi';
+import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiAlertCircle, FiEye, FiList, FiCalendar, FiUsers } from 'react-icons/fi';
 import { useThemeMode } from '@/Components/Contexts/ThemeContext';
 import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
@@ -64,6 +64,12 @@ export function SidebarWithLogo() {
                             <Link href="/dashboard/agenda" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <FiCalendar className="w-5 h-5" />
                                 <span className="ml-4">Agenda</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/dashboard/makepv" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <FiUsers className="w-5 h-5" />
+                                <span className="ml-4">Committee</span>
                             </Link>
                         </li>
                         <li>
