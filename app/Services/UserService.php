@@ -10,4 +10,9 @@ class UserService
     {
         return User::find($id);
     }
+
+    public function getAllUsers()
+    {
+        return User::all();
+    }
 }

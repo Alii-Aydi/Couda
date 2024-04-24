@@ -20,6 +20,7 @@ class CreateFiscalFilesTable extends Migration
             $table->date('delivery_date_to_admin');
             $table->date('receipt_date');
             $table->string('report');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

@@ -67,10 +67,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Agenda
         Route::get('/agenda', [AgendaController::class, 'show']);
+        Route::post('/commitee', [AgendaController::class, 'addCommitee']);
     });
 
     // Users
     Route::get('/users/{id}', [UserController::class, 'getUserById']);
+    Route::get('/users', [UserController::class, 'getAll']);
 
     // Storage
     Route::get('/files/{filename}', [StorageController::class, 'showCentralReport'])->name('reports.show');

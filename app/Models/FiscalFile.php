@@ -20,6 +20,7 @@ class FiscalFile extends Model
         'issuing_organism',
         'delivery_date_to_admin',
         'receipt_date',
+        'status',
     ];
 
     protected $casts = [

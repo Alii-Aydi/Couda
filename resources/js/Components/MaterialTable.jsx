@@ -151,6 +151,11 @@ export default function MaterialTable({ auth, filesPath, action }) {
                 enableSorting: false,
             },
             {
+                accessorKey: 'status',
+                header: 'Status',
+                size: 10,
+            },
+            {
                 accessorKey: 'created_by',
                 header: 'Created By',
                 Cell: ({ cell }) => userNames[cell.getValue()] || 'Loading...',

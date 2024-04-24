@@ -40,7 +40,8 @@ class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
             'delivery_date_to_admin' => $fiscalFile->delivery_date_to_admin,
             'receipt_date' => $fiscalFile->receipt_date,
             'updated_by' => $userId,
-            'actions' => $action
+            'actions' => $action,
+            'status' => $fiscalFile->status
         ]);
 
         // Get the IDs of the old reports associated with the fiscal file

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -23,5 +24,16 @@ class UserController extends Controller
         }
 
         return response()->json($user);
+    }
+
+    public function getAll()
+    {
+        $users = $this->userService->getAllUsers();
+
+        if (!$users) {
+            return response()->json(['error' => 'No users'], 404);
+        }
+
+        return response()->json($users);
     }
 }

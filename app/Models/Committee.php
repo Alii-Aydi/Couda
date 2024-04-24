@@ -12,6 +12,10 @@ class Committee extends Model
     protected $fillable = [
         'date',
         'proces_verbaux_id',
+        'status',
+        'title',
+        'time_start',
+        'time_end'
     ];
 
     public function procesVerbaux()
