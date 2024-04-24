@@ -6,6 +6,7 @@ import Chip from '@mui/material/Chip';
 const MemberSelectList = ({ selectedMembers, setSelectedMembers }) => {
     const [users, setUsers] = useState([]);
     const [inputValue, setInputValue] = useState('');
+    const [selectedChips, setSelectedChips] = useState([])
 
     useEffect(() => {
         // Replace this with your actual API call to fetch users
@@ -31,13 +32,15 @@ const MemberSelectList = ({ selectedMembers, setSelectedMembers }) => {
     };
 
     const handleSelect = (event, newValue) => {
-        setSelectedMembers(newValue);
+        const members = newValue.map(member => member.value)
+        setSelectedMembers(members);
+        setSelectedChips(newValue)
     };
 
     return (
         <Autocomplete
             multiple
-            value={selectedMembers}
+            value={selectedChips}
             onChange={handleSelect}
             inputValue={inputValue}
             onInputChange={handleInputChange}

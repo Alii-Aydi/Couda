@@ -99,6 +99,7 @@ export default function AgendaCalander({ auth }) {
         if (errors && Object.keys(errors).length > 0) {
             const formElement = document.getElementById('agendaForm');
             formElement.scrollIntoView({ behavior: 'smooth' });
+            console.log(errors)
         }
     }, [errors]);
 

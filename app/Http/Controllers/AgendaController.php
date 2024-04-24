@@ -22,7 +22,6 @@ class AgendaController extends Controller
             'time' => 'required|string',
             'title' => 'required|string|max:255',
             'members' => 'required|array|min:1',
-            'members.*' => 'required|integer',
         ]);
 
         $committee = Committee::create([
@@ -33,6 +32,6 @@ class AgendaController extends Controller
 
         $committee->members()->sync($validated['members']);
 
-        return redirect()->back()->with('success', 'Événement ajouté avec succès');
+        return redirect()->route('file.list')->with('info', 'Événement ajouté avec succès, Veuillez selectioner de 6 a 12 dossier pour confirmer la commitee crée. Si pas de dossier selectioner pendant 3j, la commitée crée sera supprimer');
     }
 }
