@@ -7,14 +7,20 @@ import { Link } from '@mui/material';
 import getFileIcon from '@/Utils/getFileIcon';
 import { Inertia } from '@inertiajs/inertia';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
-import { Archive } from '@mui/icons-material';
+import { Archive, ChecklistOutlined } from '@mui/icons-material';
 import ConfirmationModal from './Descorations/ConfirmationModal ';
+import BigModal from './CommiteeSelectionModal';
+import WarningModal from './Descorations/WarningModal';
 
 export default function MaterialTable({ auth, filesPath, action }) {
     const [data, setData] = useState([]);
     const [userNames, setUserNames] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCommiteeModalOpen, setIsCommiteeModalOpen] = useState(false);
     const [selectedRows, setSelectedRows] = useState({});
+    const [selectedCommittee, setSelectedCommittee] = useState('');
+    const [warning, setWarning] = useState(false);
+    const [commiteeValidationError, setCommiteeValidationError] = useState(false);
 
     const fetchDataAndUpdateState = async () => {
         try {
@@ -73,7 +79,45 @@ export default function MaterialTable({ auth, filesPath, action }) {
         }
     };
 
+    const handleSelectForCommetee = (selectedRowIds) => {
+        setSelectedRows(selectedRowIds);
+        setIsCommiteeModalOpen(true);
+    }
 
+    const confirmSelection = async () => {
+        try {
+            if (selectedCommittee !== '' && !isNaN(selectedCommittee)) {
+                const selectPromises = Object.keys(selectedRows).map(id => {
+                    const row = data.find(row => row.id.toString() === id);
+                    if (!row) return null;
+                    if (row.status !== "pending") {
+                        setWarning(true)
+                        return null;
+                    }
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    return fetch(`/dashboard/fiscalFiles/${selectedCommittee}/${row.id}`, { // Assuming you want to use selectedCommittee and row.id in the URL
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    });
+                });
+
+                await Promise.all(selectPromises);
+                console.info('All selected records selected successfully');
+                setIsCommiteeModalOpen(false);
+                setSelectedRows({});
+                await fetchDataAndUpdateState();
+                table.setRowSelection({});
+            } else {
+                setCommiteeValidationError(true);
+                return;
+            }
+        } catch (error) {
+            console.error('Error selecting records:', error);
+        }
+    };
 
     const columns = useMemo(
         () => [
@@ -184,16 +228,30 @@ export default function MaterialTable({ auth, filesPath, action }) {
             const selectedRows = table.getSelectedRowModel().rows;
             if (selectedRows.length > 0) {
                 return (
-                    <button
-                        onClick={() => handleArchiveSelected(selectedRows.reduce((acc, row) => {
-                            acc[row.original.id] = true;
-                            return acc;
-                        }, {}))}
-                        className="flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-300 text-white dark:bg-gray-900 dark:hover:bg-gray-500 transition-colors duration-150 rounded-lg focus:outline-none focus:shadow-outline"
-                    >
-                        <Archive className="h-5 w-5 mr-2" />
-                        {action}
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => handleArchiveSelected(selectedRows.reduce((acc, row) => {
+                                acc[row.original.id] = true;
+                                return acc;
+                            }, {}))}
+                            className="flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-300 text-white dark:bg-gray-900 dark:hover:bg-gray-500 transition-colors duration-150 rounded-lg focus:outline-none focus:shadow-outline"
+                        >
+                            <Archive className="h-5 w-5 mr-2" />
+                            {action}
+                        </button>
+                        {action === "Archiver" &&
+                            <button
+                                onClick={() => handleSelectForCommetee(selectedRows.reduce((acc, row) => {
+                                    acc[row.original.id] = true;
+                                    return acc;
+                                }, {}))}
+                                className="flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-300 text-white dark:bg-gray-900 dark:hover:bg-gray-500 transition-colors duration-150 rounded-lg focus:outline-none focus:shadow-outline"
+                            >
+                                <ChecklistOutlined className="h-5 w-5 mr-2" />
+                                Selectioner
+                            </button>
+                        }
+                    </div>
                 );
             }
             return null;
@@ -242,6 +300,28 @@ export default function MaterialTable({ auth, filesPath, action }) {
                         onConfirm={confirmArchive}
                     />
                 )
-            }</>
+            }
+            {
+                isCommiteeModalOpen && (
+                    <BigModal
+                        isOpen={isCommiteeModalOpen}
+                        onClose={() => setIsCommiteeModalOpen(false) && setCommiteeValidationError(false)}
+                        handleConfirm={confirmSelection}
+                        selectedCommittee={selectedCommittee}
+                        setSelectedCommittee={setSelectedCommittee}
+                        error={commiteeValidationError}
+                    />
+                )
+            }
+
+            {
+                warning && (
+                    <WarningModal
+                        isOpen={warning}
+                        onClose={() => setWarning(false)}
+                    />
+                )
+            }
+        </>
     );
 }

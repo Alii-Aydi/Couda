@@ -67,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Agenda
         Route::get('/agenda', [AgendaController::class, 'show']);
+        Route::get('/commitee/list', [AgendaController::class, 'list']);
         Route::post('/commitee', [AgendaController::class, 'addCommitee']);
     });
 

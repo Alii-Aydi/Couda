@@ -15,6 +15,12 @@ class AgendaController extends Controller
         return Inertia::render('Admin/Agenda/AgendaCalander');
     }
 
+    public function list()
+    {
+        $committees = Committee::all();
+        return response()->json($committees);
+    }
+
     public function addCommitee(Request $request)
     {
         $validated = $request->validate([
