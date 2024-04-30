@@ -40,6 +40,7 @@ class CreateCommitteesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('committee_user');
+        Schema::dropIfExists('fiscal_file_committee');
         Schema::dropIfExists('committees');
     }
 }

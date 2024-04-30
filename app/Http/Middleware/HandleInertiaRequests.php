@@ -44,6 +44,9 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
                 'info' => $request->session()->get('info'),
             ],
+            'selected' => [
+                'value' => $request->session()->get('selected'),
+            ],
         ]);
     }
 }

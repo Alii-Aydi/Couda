@@ -1,82 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Calendar, Whisper, Popover } from 'rsuite';
 import GroupIcon from '@mui/icons-material/Group';
 import MemberSelectList from '@/Components/MembersSelectList';
+import formatDate from '@/Utils/formatDate';
 
 import './AgendaCalander.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
-import { useEffect } from 'react';
-
-function getTodoList(date) {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
-
-    const dateKey = `${year}-${month}-${day}`;
-
-    const events = {
-        '2024-0-10': [
-            { time: '10:30 am', title: 'Meeting' },
-            { time: '12:00 pm', title: 'Lunch' }
-        ],
-        '2024-0-15': [
-            { time: '09:30 pm', title: 'Products Introduction Meeting' },
-            { time: '12:30 pm', title: 'Client entertaining' },
-            { time: '02:00 pm', title: 'Product design discussion' },
-            { time: '05:00 pm', title: 'Product test and acceptance' },
-            { time: '06:30 pm', title: 'Reporting' },
-            { time: '10:00 pm', title: 'Going home to walk the dog' }
-        ],
-    };
-
-    return events[dateKey] || [];
-}
-
-function renderCell(date) {
-    const list = getTodoList(date);
-    const displayList = list.filter((item, index) => index < 2);
-
-    if (list.length) {
-        const moreCount = list.length - displayList.length;
-        const moreItem = (
-            <li>
-                <Whisper
-                    placement="top"
-                    trigger="click"
-                    speaker={
-                        <Popover>
-                            {list.map((item, index) => (
-                                <p key={index}>
-                                    <b>{item.time}</b> - {item.title}
-                                </p>
-                            ))}
-                        </Popover>
-                    }
-                >
-                    <a className='text-blue-600'>{moreCount} more</a>
-                </Whisper>
-            </li>
-        );
-
-        return (
-            <ul className="calendar-todo-list">
-                {displayList.map((item, index) => (
-                    <li key={index}>
-                        <GroupIcon style={{ fontSize: 20, color: 'gray' }} /> <b>{item.time}</b> - {item.title}
-                    </li>
-                ))}
-                {moreCount ? moreItem : null}
-            </ul>
-        );
-    }
-
-    return null;
-}
 
 export default function AgendaCalander({ auth }) {
-    const { data, setData, post, processing, errors, reset, progress } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         date: '',
         time: '',
         title: '',
@@ -84,6 +18,107 @@ export default function AgendaCalander({ auth }) {
     });
 
     const { date, time, title, members } = data;
+
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [formated, setFormated] = useState(false);
+    const [formattedEvents, setFormattedEvents] = useState({});
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await fetch('/dashboard/commitee/list');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch events');
+                }
+                const data = await response.json();
+                setEvents(data);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
+    useEffect(() => {
+        formatEvents();
+    }, [events]);
+
+    function formatEvents() {
+        if (!loading) {
+            const formatted = {};
+            for (let event of events) {
+                const dateKey = formatDate(event.date);
+                if (!formatted[dateKey]) {
+                    formatted[dateKey] = [];
+                }
+                formatted[dateKey].push({
+                    time: event.time_start,
+                    title: event.title
+                });
+            }
+            setFormattedEvents(formatted);
+            setFormated(true)
+        }
+    }
+
+    function getTodoList(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+
+        const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+        return formattedEvents[dateKey] || [];
+    }
+
+    function renderCell(date) {
+        const list = getTodoList(date);
+        const displayList = list.filter((item, index) => index < 2);
+
+        if (list.length) {
+            const moreCount = list.length - displayList.length;
+            const moreItem = (
+                <li>
+                    <Whisper
+                        placement="top"
+                        trigger="click"
+                        speaker={
+                            <Popover>
+                                {list.map((item, index) => (
+                                    <p key={index}>
+                                        <Link href='/' className="hover:underline">
+                                            <b>{item.time}</b> - {item.title}
+                                        </Link>
+                                    </p>
+                                ))}
+                            </Popover>
+                        }
+                    >
+                        <a className='text-blue-600'>{moreCount} more</a>
+                    </Whisper>
+                </li>
+            );
+
+            return (
+                <td onClick={() => handleCellClick(date)} className="calendar-cell">
+                    <ul className="calendar-todo-list">
+                        {displayList.map((item, index) => (
+                            <li key={index}>
+                                <Link href='/' className="hover:underline">
+                                    <GroupIcon style={{ fontSize: 20, color: 'gray' }} /> <b>{item.time}</b> - {item.title}
+                                </Link>
+                            </li>
+                        ))}
+                        {moreCount ? moreItem : null}
+                    </ul>
+                </td>
+            );
+        }
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -99,7 +134,7 @@ export default function AgendaCalander({ auth }) {
         if (errors && Object.keys(errors).length > 0) {
             const formElement = document.getElementById('agendaForm');
             formElement.scrollIntoView({ behavior: 'smooth' });
-            console.log(errors)
+            console.log(errors);
         }
     }, [errors]);
 
@@ -110,7 +145,7 @@ export default function AgendaCalander({ auth }) {
             <div className="py-12">
                 <h1 className='p-4 text-4xl'>Agenda</h1>
                 <div className="p-7 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <Calendar bordered renderCell={renderCell} cellClassName={date => (date.getDay() % 2 ? 'bg-gray' : undefined)} />
+                    {formated && (<Calendar bordered renderCell={renderCell} cellClassName={date => (date.getDay() % 2 ? 'bg-gray' : undefined)} />)}
                 </div>
                 <div className="p-7 mt-4 bg-white dark:bg-gray-800 dark:text-white overflow-hidden shadow-sm sm:rounded-lg">
                     <h2 className="text-2xl font-semibold mb-4">Add New Commitée Event</h2>

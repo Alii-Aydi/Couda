@@ -47,4 +47,9 @@ class FiscalFile extends Model
     {
         return $this->hasMany(Reclamation::class);
     }
+
+    public function Commitees()
+    {
+        return $this->belongsToMany(Committee::class);
+    }
 }

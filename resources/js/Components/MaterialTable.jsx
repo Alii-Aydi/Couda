@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Button, MenuItem } from '@mui/material';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useState, useEffect, useMemo } from 'react';
@@ -13,6 +13,7 @@ import BigModal from './CommiteeSelectionModal';
 import WarningModal from './Descorations/WarningModal';
 
 export default function MaterialTable({ auth, filesPath, action }) {
+    const { selected } = usePage().props
     const [data, setData] = useState([]);
     const [userNames, setUserNames] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,12 +22,19 @@ export default function MaterialTable({ auth, filesPath, action }) {
     const [selectedCommittee, setSelectedCommittee] = useState('');
     const [warning, setWarning] = useState(false);
     const [commiteeValidationError, setCommiteeValidationError] = useState(false);
+    const [isSelction, setIsSelction] = useState(selected.value ? true : false);
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const fetchDataAndUpdateState = async () => {
         try {
             const response = await fetch(filesPath);
             const data = await response.json();
-            setData(data.data);
+            if (!isSelction) {
+                setData(data.data);
+            } else {
+                setData(data.data.filter(e => e.status === 'pending'));
+            }
             const userIds = [...new Set(data.data.map(item => item.created_by))];
             for (const id of userIds) {
                 try {
@@ -58,7 +66,6 @@ export default function MaterialTable({ auth, filesPath, action }) {
         const archivePromises = Object.keys(selectedRows).map(id => {
             const row = data.find(row => row.id.toString() === id);
             if (!row) return null;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             return fetch(`/dashboard/fiscalFiles/${row.id}/${action}`, {
                 method: 'POST',
                 headers: {
@@ -94,9 +101,8 @@ export default function MaterialTable({ auth, filesPath, action }) {
                         setWarning(true)
                         return null;
                     }
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                    return fetch(`/dashboard/fiscalFiles/${selectedCommittee}/${row.id}`, { // Assuming you want to use selectedCommittee and row.id in the URL
-                        method: 'POST',
+                    return fetch(`/dashboard/commitee/${selectedCommittee}/fiscalfile/${row.id}`, {
+                        method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': csrfToken,
@@ -104,12 +110,14 @@ export default function MaterialTable({ auth, filesPath, action }) {
                     });
                 });
 
-                await Promise.all(selectPromises);
-                console.info('All selected records selected successfully');
+                const res = await Promise.all(selectPromises);
                 setIsCommiteeModalOpen(false);
                 setSelectedRows({});
                 await fetchDataAndUpdateState();
                 table.setRowSelection({});
+                if (res[0].redirected) {
+                    Inertia.visit(res[0].url + "?flash=Les dossiers sont selectioner pour la committee N°" + selectedCommittee)
+                }
             } else {
                 setCommiteeValidationError(true);
                 return;

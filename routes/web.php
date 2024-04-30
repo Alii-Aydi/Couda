@@ -69,6 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/agenda', [AgendaController::class, 'show']);
         Route::get('/commitee/list', [AgendaController::class, 'list']);
         Route::post('/commitee', [AgendaController::class, 'addCommitee']);
+        Route::put('/commitee/{id}/fiscalfile/{fid}', [AgendaController::class, 'attachFiscalFileToCommitee']);
     });
 
     // Users

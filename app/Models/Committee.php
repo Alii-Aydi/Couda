@@ -32,4 +32,9 @@ class Committee extends Model
     {
         return $this->belongsToMany(Signature::class);
     }
+
+    public function fiscalFiles()
+    {
+        return $this->belongsToMany(FiscalFile::class);
+    }
 }

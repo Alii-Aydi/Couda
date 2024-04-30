@@ -30,6 +30,7 @@ class FiscalFileFactory extends Factory
             'issuing_organism' => $this->faker->company,
             'delivery_date_to_admin' => $this->faker->dateTimeBetween('-30 days', 'now'), // Random date within the last 30 days
             'receipt_date' => $this->faker->dateTimeBetween('-30 days', 'now'), // Random date within the last 30 days
+            'status' => $this->faker->randomElement(['pending']),
         ];
     }
 }

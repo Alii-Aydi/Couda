@@ -2,14 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\FiscalFileServiceInterface;
 use App\Models\Committee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class AgendaController extends Controller
 {
+    protected $fiscalFileService;
+
+    public function __construct(FiscalFileServiceInterface $fiscalFileService)
+    {
+        $this->fiscalFileService = $fiscalFileService;
+    }
+
+
     public function show()
     {
         return Inertia::render('Admin/Agenda/AgendaCalander');
@@ -38,6 +48,23 @@ class AgendaController extends Controller
 
         $committee->members()->sync($validated['members']);
 
-        return redirect()->route('file.list')->with('info', 'Événement ajouté avec succès, Veuillez selectioner de 6 a 12 dossier pour confirmer la commitee crée. Si pas de dossier selectioner pendant 3j, la commitée crée sera supprimer');
+        return redirect()->route('file.list')->with([
+            'info' => 'Événement ajouté avec succès, Veuillez selectioner de 6 a 12 dossier pour confirmer la commitee crée. Si pas de dossier selectioner pendant 3j, la commitée crée sera supprimer',
+            'selected' => true,
+        ]);
+    }
+
+    public function attachFiscalFileToCommitee($commiteeID, $fiscalFileId)
+    {
+        $fiscalFile = $this->fiscalFileService->findOne($fiscalFileId);
+        $commitee = Committee::findOrFail($commiteeID);
+
+        $commitee->fiscalFiles()->attach($fiscalFileId);
+        $fiscalFile->update(['status' => 'selected']);
+
+        $message = 'Dossiers selectionees';
+        Session::flash('success', $message);
+
+        return redirect()->route('makepv')->with(['success' => $message]);
     }
 }
