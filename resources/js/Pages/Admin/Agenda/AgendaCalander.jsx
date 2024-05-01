@@ -7,7 +7,7 @@ import MemberSelectList from '@/Components/MembersSelectList';
 import formatDate from '@/Utils/formatDate';
 
 import './AgendaCalander.css';
-import 'rsuite/dist/rsuite-no-reset.min.css';
+import { Skeleton } from '@mui/material';
 
 export default function AgendaCalander({ auth }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -57,7 +57,8 @@ export default function AgendaCalander({ auth }) {
                 }
                 formatted[dateKey].push({
                     time: event.time_start,
-                    title: event.title
+                    title: event.title,
+                    id: event.id
                 });
             }
             setFormattedEvents(formatted);
@@ -90,7 +91,7 @@ export default function AgendaCalander({ auth }) {
                             <Popover>
                                 {list.map((item, index) => (
                                     <p key={index}>
-                                        <Link href='/' className="hover:underline">
+                                        <Link href={`/dashboard/commitee/${item.id}/makepv`} className="hover:underline">
                                             <b>{item.time}</b> - {item.title}
                                         </Link>
                                     </p>
@@ -108,7 +109,7 @@ export default function AgendaCalander({ auth }) {
                     <ul className="calendar-todo-list">
                         {displayList.map((item, index) => (
                             <li key={index}>
-                                <Link href='/' className="hover:underline">
+                                <Link href={`/dashboard/commitee/${item.id}/makepv`} className="hover:underline">
                                     <GroupIcon style={{ fontSize: 20, color: 'gray' }} /> <b>{item.time}</b> - {item.title}
                                 </Link>
                             </li>
@@ -145,7 +146,15 @@ export default function AgendaCalander({ auth }) {
             <div className="py-12">
                 <h1 className='p-4 text-4xl'>Agenda</h1>
                 <div className="p-7 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    {formated && (<Calendar bordered renderCell={renderCell} cellClassName={date => (date.getDay() % 2 ? 'bg-gray' : undefined)} />)}
+                    {formated ? (
+                        <Calendar
+                            bordered
+                            renderCell={renderCell}
+                            cellClassName={(date) => (date.getDay() % 2 ? 'bg-gray' : undefined)}
+                        />
+                    ) : (
+                        <Skeleton variant="rectangular" animation="wave" width="100%" height={1000} />
+                    )}
                 </div>
                 <div className="p-7 mt-4 bg-white dark:bg-gray-800 dark:text-white overflow-hidden shadow-sm sm:rounded-lg">
                     <h2 className="text-2xl font-semibold mb-4">Add New Commitée Event</h2>

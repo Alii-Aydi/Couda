@@ -11,10 +11,23 @@ function Flash() {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState('');
     const [severity, setSeverity] = useState('info');
+    const [paramValue, setParamValue] = useState('');
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramValueFromQuery = urlParams.get('flash.success');
+        if (paramValueFromQuery) {
+            setParamValue(paramValueFromQuery);
+        }
+    }, []);
 
     useEffect(() => {
         if (flash.success) {
             toast.success(flash.success);
+        }
+
+        if (paramValue) {
+            toast.success(paramValue);
         }
 
         if (flash.error) {
@@ -26,7 +39,7 @@ function Flash() {
             setSeverity('info');
             setOpen(true);
         }
-    }, [flash.success, flash.error, flash.info]);
+    }, [flash.success, flash.error, flash.info, paramValue]);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {

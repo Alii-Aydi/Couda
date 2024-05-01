@@ -61,10 +61,20 @@ class AgendaController extends Controller
 
         $commitee->fiscalFiles()->attach($fiscalFileId);
         $fiscalFile->update(['status' => 'selected']);
+        $commitee->update(['status' => 'confirmed']);
 
         $message = 'Dossiers selectionees';
         Session::flash('success', $message);
 
-        return redirect()->route('makepv')->with(['success' => $message]);
+        return redirect()->route('makepv', ['id' => $commiteeID])->with(['success' => $message]);
+    }
+
+    public function showMakePV($commiteeId)
+    {
+        $committee = Committee::with('members', 'fiscalFiles')->findOrFail($commiteeId);
+
+        return Inertia::render('Admin/ProcesVerbal/CreatePV', [
+            'committee' => $committee,
+        ]);
     }
 }

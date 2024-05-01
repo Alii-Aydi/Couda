@@ -7,33 +7,65 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import { Settings, GroupAdd, VideoLabel, Check } from '@mui/icons-material';
+import { FileCopy, GroupAdd, Check } from '@mui/icons-material';
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import { Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel } from '@mui/material';
+import MeetingMinutes from '@/Pages/Admin/ProcesVerbal/ProcesVerbal';
+import { useEffect } from 'react';
 
-// Define steps with fields array
-const steps = [
-    { label: 'Select campaign settings', icon: <Settings />, fields: ['campaignName'] },
-    { label: 'Create an ad group', icon: <GroupAdd />, fields: ['adGroupName'] },
-    { label: 'Create an ad', icon: <VideoLabel />, fields: ['adName', 'adBudget'] },
-];
-
-export default function MultiStepForm() {
-    const [activeStep, setActiveStep] = useState(0);
-    const [completed, setCompleted] = useState({});
-    const [formData, setFormData] = useState({
+export default function MultiStepForm({ commitee }) {
+    const members = commitee.members.map(mem => mem.name)
+    const initialFormData = {
         campaignName: '',
         adGroupName: '',
         adName: '',
         adBudget: '',
-    });
+        // Add members' names as keys with initial value ''
+        ...Object.fromEntries(members.map(name => [name, false])),
+    };
+    // Define steps with fields array
+    const steps = [
+        { label: 'Membres Presence', icon: <GroupAdd />, fields: members },
+        { label: 'Proces Verbales', icon: <FileCopy />, fields: ['pv'] },
+        { label: 'Dessition et conclution', icon: <BookmarkAddedIcon />, fields: ['adName', 'adBudget'] },
+    ];
+    const [activeStep, setActiveStep] = useState(0);
+    const [completed, setCompleted] = useState({});
+    const [formData, setFormData] = useState(initialFormData);
     const [formErrors, setFormErrors] = useState({});
+    const [absences, setAbsences] = useState([]);
+    const [attende, setAttende] = useState([]);
+
+    useEffect(() => {
+        const listAbs = []
+        const listAtt = []
+        for (let key in formData) {
+            if (formData[key] !== '') {
+                if (!formData[key]) {
+                    listAbs.push(key)
+                } else {
+                    listAtt.push(key)
+                }
+            }
+        }
+        setAbsences(listAbs)
+        setAttende(listAtt)
+    }, [formData])
+
 
     const validateForm = () => {
         const errors = {};
-        steps[activeStep].fields.forEach((field) => {
-            if (!formData[field]) {
-                errors[field] = 'This field is required';
-            }
-        });
+        if (activeStep === 0 && steps[activeStep].fields.some(field => formData[field])) {
+            return true;
+        } else if (activeStep === 0) {
+            errors['checkbox'] = 'Un member est requis au moins';
+        } else {
+            steps[activeStep].fields.forEach((field) => {
+                if (!formData[field]) {
+                    errors[field] = 'This field is required';
+                }
+            });
+        }
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -66,21 +98,13 @@ export default function MultiStepForm() {
         alert('Form submitted successfully!');
     };
 
-    const handleReset = () => {
-        setActiveStep(0);
-        setCompleted({});
-        setFormData({
-            campaignName: '',
-            adGroupName: '',
-            adName: '',
-            adBudget: '',
-        });
-        setFormErrors({});
-    };
-
     const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
+        const { name, checked, value } = event.target;
+        if (event.target.type === 'checkbox') {
+            setFormData({ ...formData, [name]: checked });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
     const isLastStep = () => activeStep === steps.length - 1;
@@ -94,7 +118,7 @@ export default function MultiStepForm() {
                         <StepButton color="inherit" onClick={handleStep(index)}>
                             <StepLabel
                                 StepIconComponent={() => (
-                                    <div className={`flex items-center justify-center w-12 h-12 rounded-full text-white ${completed[index] ? 'bg-green-500' : 'bg-indigo-500'} ${activeStep === index ? 'glow-effect' : ''}`}>
+                                    <div className={`flex items-center justify-center w-12 h-12 rounded-full text-white ${completed[index] ? 'bg-green-700' : 'bg-indigo-500'} ${activeStep === index ? 'glow-effect' : ''}`}>
                                         {completed[index]
                                             ? <Check style={{ fontSize: '36px' }} />
                                             : React.cloneElement(step.icon, {
@@ -105,7 +129,7 @@ export default function MultiStepForm() {
                                     </div>
                                 )}
                             >
-                                <div className={`text-sm font-medium px-2 py-1 rounded ${activeStep === index ? 'bg-green-500 text-white' : 'bg-transparent'}`}>
+                                <div className={`text-sm font-medium px-2 py-1 rounded ${activeStep === index ? 'bg-green-700 text-white' : 'bg-transparent'}`}>
                                     {step.label}
                                 </div>
                             </StepLabel>
@@ -115,24 +139,51 @@ export default function MultiStepForm() {
             </Stepper>
 
             <div>
-                <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
-                <Box component="form" noValidate sx={{ mt: 1 }}>
-                    {steps[activeStep].fields.map((field) => (
-                        <TextField
-                            key={field}
-                            required
-                            fullWidth
-                            id={field}
-                            name={field}
-                            label={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
-                            value={formData[field]}
-                            onChange={handleChange}
-                            error={formErrors[field]}
-                            helperText={formErrors[field]}
-                            margin="normal"
-                            className="mb-4"
-                        />
-                    ))}
+                {activeStep === 0 ? <Typography sx={{ mt: 2, mb: 1, px: 4 }}>Selectioner les membres presents</Typography> : ''}
+                <Box component="form" noValidate sx={{ mt: 1, px: 4 }}>
+                    {/*fields */}
+                    {activeStep === 0 && (
+                        <FormControl component="fieldset" error={formErrors['checkbox']}>
+                            <FormHelperText sx={{ mx: 0 }}>{formErrors['checkbox']}</FormHelperText>
+                            {steps[activeStep].fields.map((field, i) => (
+                                <FormControlLabel
+                                    key={field}
+                                    control={<Checkbox
+                                        checked={formData[field]}
+                                        onChange={handleChange}
+                                        name={field}
+                                    />}
+                                    label={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
+                                />
+                            ))}
+                        </FormControl>
+                    )}
+
+                    {activeStep === 2 && (
+                        steps[activeStep].fields.map((field, i) => (
+                            <TextField
+                                key={field}
+                                required
+                                fullWidth
+                                id={field}
+                                name={field}
+                                label={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
+                                value={formData[field]}
+                                onChange={handleChange}
+                                error={formErrors[field]}
+                                helperText={formErrors[field]}
+                                margin="normal"
+                                className="mb-4"
+                            />
+                        ))
+                    )}
+
+                    {activeStep === 1 && (
+                        steps[activeStep].fields.map((field, i) => (
+                            <MeetingMinutes commitee={commitee} absences={absences} attende={attende} />
+                        ))
+                    )}
+
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }} className="space-x-2">
                         <Button
                             color="inherit"
@@ -151,17 +202,13 @@ export default function MultiStepForm() {
 
                     </Box>
                 </Box>
-            </div>
+            </div >
             {allStepsCompleted() && (
                 <React.Fragment>
                     <Typography sx={{ mt: 2, mb: 1 }}>All steps completed - you're finished</Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }} className="space-x-2">
-                        <Button onClick={handleReset} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Reset
-                        </Button>
-                    </Box>
                 </React.Fragment>
-            )}
-        </Box>
+            )
+            }
+        </Box >
     );
 }

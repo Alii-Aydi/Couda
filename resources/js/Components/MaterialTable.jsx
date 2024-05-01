@@ -116,7 +116,7 @@ export default function MaterialTable({ auth, filesPath, action }) {
                 await fetchDataAndUpdateState();
                 table.setRowSelection({});
                 if (res[0].redirected) {
-                    Inertia.visit(res[0].url + "?flash=Les dossiers sont selectioner pour la committee N°" + selectedCommittee)
+                    Inertia.visit(res[0].url + "?flash.success=Les dossiers sont selectioner pour la committee N°" + selectedCommittee)
                 }
             } else {
                 setCommiteeValidationError(true);
@@ -142,6 +142,17 @@ export default function MaterialTable({ auth, filesPath, action }) {
             {
                 accessorKey: 'cin_or_fiscal_number',
                 header: 'CIN/Fiscal No.',
+                size: 10,
+            },
+            {
+                accessorKey: 'status',
+                header: 'Status',
+                size: 10,
+            },
+            {
+                accessorKey: 'created_by',
+                header: 'Created By',
+                Cell: ({ cell }) => userNames[cell.getValue()] || 'Loading...',
                 size: 10,
             },
             {
@@ -201,17 +212,6 @@ export default function MaterialTable({ auth, filesPath, action }) {
                 },
                 size: 10,
                 enableSorting: false,
-            },
-            {
-                accessorKey: 'status',
-                header: 'Status',
-                size: 10,
-            },
-            {
-                accessorKey: 'created_by',
-                header: 'Created By',
-                Cell: ({ cell }) => userNames[cell.getValue()] || 'Loading...',
-                size: 10,
             },
         ],
         [userNames],

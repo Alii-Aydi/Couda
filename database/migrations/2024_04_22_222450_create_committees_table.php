@@ -29,6 +29,7 @@ class CreateCommitteesTable extends Migration
             $table->foreignId('committee_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->primary(['committee_id', 'user_id']);
+            $table->string('status')->default('pending');
         });
     }
 

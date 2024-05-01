@@ -33,10 +33,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/Dashboard');
     })->name('dashboard');
 
-    Route::get('/dashboard/makepv', function () {
-        return Inertia::render('Admin/ProcesVerbal/CreatePV');
-    })->name('makepv');
-
     // Profile
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -70,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/commitee/list', [AgendaController::class, 'list']);
         Route::post('/commitee', [AgendaController::class, 'addCommitee']);
         Route::put('/commitee/{id}/fiscalfile/{fid}', [AgendaController::class, 'attachFiscalFileToCommitee']);
+        Route::get('/commitee/{id}/makepv', [AgendaController::class, 'showMakePV'])->name('makepv');
     });
 
     // Users
