@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('fiscal_files_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('fiscal_file_id');
-            $table->unsignedBigInteger('updated_by');
-            $table->string('name');
-            $table->string('cin_or_fiscal_number');
-            $table->date('taxation_date');
-            $table->string('tax_center');
-            $table->decimal('tax_amount', 8, 2);
+            $table->unsignedBigInteger('fiscal_file_id')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->string('name')->nullable();
+            $table->string('cin_or_fiscal_number')->nullable();
+            $table->date('taxation_date')->nullable();
+            $table->string('tax_center')->nullable();
+            $table->decimal('tax_amount', 8, 2)->nullable();
             $table->string('theme')->nullable();
-            $table->string('issuing_organism');
-            $table->date('delivery_date_to_admin');
-            $table->date('receipt_date');
-            $table->string('status');
+            $table->string('issuing_organism')->nullable();
+            $table->date('delivery_date_to_admin')->nullable();
+            $table->date('receipt_date')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
 
             $table->foreign('fiscal_file_id')->references('id')->on('fiscal_files')->onDelete('cascade');

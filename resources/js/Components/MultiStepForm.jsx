@@ -16,18 +16,17 @@ import { useEffect } from 'react';
 export default function MultiStepForm({ commitee }) {
     const members = commitee.members.map(mem => mem.name)
     const initialFormData = {
-        campaignName: '',
-        adGroupName: '',
-        adName: '',
-        adBudget: '',
+        'presedent': '',
+        'ouverture': '',
+        'cloture': '',
         // Add members' names as keys with initial value ''
         ...Object.fromEntries(members.map(name => [name, false])),
     };
     // Define steps with fields array
     const steps = [
         { label: 'Membres Presence', icon: <GroupAdd />, fields: members },
-        { label: 'Proces Verbales', icon: <FileCopy />, fields: ['pv'] },
-        { label: 'Dessition et conclution', icon: <BookmarkAddedIcon />, fields: ['adName', 'adBudget'] },
+        { label: 'Proces Verbales', icon: <FileCopy />, fields: ['presedent', 'ouverture', 'cloture'] },
+        { label: 'Dessition et conclution', icon: <BookmarkAddedIcon />, fields: [''] },
     ];
     const [activeStep, setActiveStep] = useState(0);
     const [completed, setCompleted] = useState({});
@@ -36,11 +35,14 @@ export default function MultiStepForm({ commitee }) {
     const [absences, setAbsences] = useState([]);
     const [attende, setAttende] = useState([]);
 
+    const [newReports, setNewReports] = useState([]);
+    const [reportErrors, setReportErrors] = useState([]);
+
     useEffect(() => {
         const listAbs = []
         const listAtt = []
         for (let key in formData) {
-            if (formData[key] !== '') {
+            if (formData[key] !== '' && !['presedent', 'ouverture', 'cloture'].includes(key)) {
                 if (!formData[key]) {
                     listAbs.push(key)
                 } else {
@@ -59,15 +61,26 @@ export default function MultiStepForm({ commitee }) {
             return true;
         } else if (activeStep === 0) {
             errors['checkbox'] = 'Un member est requis au moins';
-        } else {
+            setFormErrors(errors);
+            return false
+        } else if (activeStep === 1) {
+            const erRors = newReports.map(report => ({
+                name: report.name.trim().length === 0,
+                description: report.description.trim().length < 3
+            }));
+
             steps[activeStep].fields.forEach((field) => {
-                if (!formData[field]) {
-                    errors[field] = 'This field is required';
+                if (formData[field].trim().length < 3) {
+                    errors[field] = true;
+                } else {
+                    errors[field] = false;
                 }
             });
+            setFormErrors(errors);
+            setReportErrors(erRors);
+
+            return !(erRors.some(e => e.description === true || e.name === true) || Object.keys(errors).some(key => errors[key] === true))
         }
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
     };
 
     const handleNext = () => {
@@ -159,29 +172,22 @@ export default function MultiStepForm({ commitee }) {
                         </FormControl>
                     )}
 
-                    {activeStep === 2 && (
-                        steps[activeStep].fields.map((field, i) => (
-                            <TextField
-                                key={field}
-                                required
-                                fullWidth
-                                id={field}
-                                name={field}
-                                label={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
-                                value={formData[field]}
-                                onChange={handleChange}
-                                error={formErrors[field]}
-                                helperText={formErrors[field]}
-                                margin="normal"
-                                className="mb-4"
-                            />
-                        ))
+                    {activeStep === 1 && (
+                        <MeetingMinutes
+                            formData={formData}
+                            setFormData={setFormData}
+                            commitee={commitee}
+                            absences={absences}
+                            attende={attende}
+                            reportErrors={reportErrors}
+                            setNewReports={setNewReports}
+                            newReports={newReports}
+                            formErrors={formErrors}
+                        />
                     )}
 
-                    {activeStep === 1 && (
-                        steps[activeStep].fields.map((field, i) => (
-                            <MeetingMinutes commitee={commitee} absences={absences} attende={attende} />
-                        ))
+                    {activeStep === 2 && (
+                        console.log(commitee.fiscal_files)
                     )}
 
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }} className="space-x-2">

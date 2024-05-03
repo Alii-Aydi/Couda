@@ -10,16 +10,16 @@ class CreateFiscalFilesTable extends Migration
     {
         Schema::create('fiscal_files', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('cin_or_fiscal_number');
-            $table->date('taxation_date');
-            $table->string('tax_center');
-            $table->decimal('tax_amount', 8, 2);
-            $table->string('theme');
-            $table->string('issuing_organism');
-            $table->date('delivery_date_to_admin');
-            $table->date('receipt_date');
-            $table->string('report');
+            $table->string('name')->nullable();
+            $table->string('cin_or_fiscal_number')->nullable();
+            $table->date('taxation_date')->nullable();
+            $table->string('tax_center')->nullable();
+            $table->decimal('tax_amount', 8, 2)->nullable();
+            $table->string('theme')->nullable();
+            $table->string('issuing_organism')->nullable();
+            $table->date('delivery_date_to_admin')->nullable();
+            $table->date('receipt_date')->nullable();
+            $table->string('report')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });
