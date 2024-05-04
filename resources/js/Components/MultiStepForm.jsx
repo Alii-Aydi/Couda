@@ -9,9 +9,10 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { FileCopy, GroupAdd, Check } from '@mui/icons-material';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
-import { Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel } from '@mui/material';
+import { Checkbox, Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel } from '@mui/material';
 import MeetingMinutes from '@/Pages/Admin/ProcesVerbal/ProcesVerbal';
 import { useEffect } from 'react';
+import SousPv from '@/Pages/Admin/ProcesVerbal/SousPv';
 
 export default function MultiStepForm({ commitee }) {
     const members = commitee.members.map(mem => mem.name)
@@ -37,6 +38,9 @@ export default function MultiStepForm({ commitee }) {
 
     const [newReports, setNewReports] = useState([]);
     const [reportErrors, setReportErrors] = useState([]);
+
+    const [decisions, setDecisions] = useState(Array(commitee.fiscal_files.length).fill({ "decisions": '', "notes": '' }));
+    const [filesErrors, setFilesErrors] = useState([]);
 
     useEffect(() => {
         const listAbs = []
@@ -80,6 +84,14 @@ export default function MultiStepForm({ commitee }) {
             setReportErrors(erRors);
 
             return !(erRors.some(e => e.description === true || e.name === true) || Object.keys(errors).some(key => errors[key] === true))
+        } else {
+            const erRors = decisions.map(d => ({
+                decisions: d.decisions.trim().length === 0,
+                notes: d.notes.trim().length < 3
+            }));
+            setFilesErrors(erRors)
+
+            return !(erRors.some(e => e.decisions === true || e.notes === true))
         }
     };
 
@@ -106,9 +118,33 @@ export default function MultiStepForm({ commitee }) {
         }
     };
 
-    const handleFinish = () => {
-        console.log('Form Data:', formData);
-        alert('Form submitted successfully!');
+    const handleFinish = async () => {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            const dataToSend = {
+                formData: formData,
+                reportsData: newReports,
+                decisionsData: decisions
+            };
+
+            const response = await fetch(`/dashboard/commitee/${commitee.id}/makepv`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(dataToSend)
+            });
+
+            if (response.ok) {
+                console.log('Data sent successfully');
+            } else {
+                console.error('Failed to send data:', response.statusText);
+            }
+        } catch (error) {
+            console.error('An error occurred:', error.message);
+        }
     };
 
     const handleChange = (event) => {
@@ -152,7 +188,7 @@ export default function MultiStepForm({ commitee }) {
             </Stepper>
 
             <div>
-                {activeStep === 0 ? <Typography sx={{ mt: 2, mb: 1, px: 4 }}>Selectioner les membres presents</Typography> : ''}
+                {activeStep === 0 ? <Typography variant="h4" sx={{ mt: 2, mb: 1, px: 4 }}>Selectioner les membres presents:</Typography> : ''}
                 <Box component="form" noValidate sx={{ mt: 1, px: 4 }}>
                     {/*fields */}
                     {activeStep === 0 && (
@@ -186,9 +222,16 @@ export default function MultiStepForm({ commitee }) {
                         />
                     )}
 
+                    {activeStep === 2 ? <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>Les Dessitions et Sous-P-V:</Typography> : ''}
                     {activeStep === 2 && (
-                        console.log(commitee.fiscal_files)
+                        <SousPv
+                            fiscal_files={commitee.fiscal_files}
+                            decisions={decisions}
+                            setDecisions={setDecisions}
+                            filesErrors={filesErrors}
+                        />
                     )}
+                    <Divider className='pt-8'></Divider>
 
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }} className="space-x-2">
                         <Button
@@ -209,12 +252,6 @@ export default function MultiStepForm({ commitee }) {
                     </Box>
                 </Box>
             </div >
-            {allStepsCompleted() && (
-                <React.Fragment>
-                    <Typography sx={{ mt: 2, mb: 1 }}>All steps completed - you're finished</Typography>
-                </React.Fragment>
-            )
-            }
         </Box >
     );
 }

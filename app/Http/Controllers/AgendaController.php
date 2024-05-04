@@ -71,12 +71,19 @@ class AgendaController extends Controller
 
     public function showMakePV($commiteeId)
     {
-        $committee = Committee::with('members', 'fiscalFiles')->findOrFail($commiteeId);
+        $committee = Committee::with('members', 'fiscalFiles.reports')->findOrFail($commiteeId);
 
         Log::alert($committee);
 
         return Inertia::render('Admin/ProcesVerbal/CreatePV', [
             'committee' => $committee,
         ]);
+    }
+
+    public function storePV($commiteeId, Request $request)
+    {
+        $committee = Committee::findOrFail($commiteeId);
+
+        return response()->json('ok');
     }
 }
