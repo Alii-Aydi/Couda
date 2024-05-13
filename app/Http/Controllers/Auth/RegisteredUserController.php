@@ -10,19 +10,29 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
      */
+
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        $roles = Role::all(); // Fetch all roles from the database
+
+        return Inertia::render('Auth/Register', [
+            'roles' => $roles // Pass roles to the view
+        ]);
     }
+
 
     /**
      * Handle an incoming registration request.
@@ -33,23 +43,36 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'email' => 'required|string|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => [
+                'required',
+                'string',
+                Rule::in(['admin', 'member', 'secretary', 'dossier manager']),
+            ],
+            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cin' => 'required|string|max:255',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'cin' => $request->cin,
         ]);
+        $user->assignRole($request->role);
 
-        // Assign default role to the user
-        $user->assignRole('user');
+        if ($request->hasFile('profile_pic')) {
+            $profilePic = $request->file('profile_pic');
+            $cin = str_replace(' ', '_', $user->cin);
+            $profilePicPath = Storage::put('private/users/' . $cin, $profilePic);
+            $user->profile_pic = $profilePicPath;
+            $user->save();
+        }
+
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('setting.users')->with('success', 'User created successfully');
     }
 }

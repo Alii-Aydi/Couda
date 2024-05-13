@@ -21,6 +21,10 @@ class CreateSignaturesTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('signature_id')->references('id')->on('signatures')->onDelete('cascade')->deferrable();
+        });
     }
 
     /**

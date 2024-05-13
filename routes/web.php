@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     FiscalFilesLogsController,
     ProfileController,
     ReclamationController,
+    SettingsControler,
     StorageController,
     UserController
 };
@@ -65,10 +66,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/agenda', [AgendaController::class, 'show']);
         Route::get('/commitee/list', [AgendaController::class, 'list']);
         Route::post('/commitee', [AgendaController::class, 'addCommitee']);
-        Route::put('/commitee/{id}/fiscalfile/{fid}', [AgendaController::class, 'attachFiscalFileToCommitee']);
 
         Route::get('/commitee/{id}/makepv', [AgendaController::class, 'showMakePV'])->name('makepv');
         Route::post('/commitee/{id}/makepv', [AgendaController::class, 'storePV'])->name('commitee.store');
+        Route::put('/commitee/{id}/fiscalfile/{fid}', [AgendaController::class, 'attachFiscalFileToCommitee']);
+
+        // Settings
+        Route::get('/settings/accountManagement', [SettingsControler::class, 'index'])->name('setting.users');
     });
 
     // Users

@@ -1,6 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import MaterialTable from '@/Components/MaterialTable';
 
 export default function Dashboard({ auth }) {
     return (

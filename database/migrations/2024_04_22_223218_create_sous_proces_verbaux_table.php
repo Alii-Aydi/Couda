@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('sous_proces_verbaux', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('proces_verbaux_id'); // Add this line to create the column
-            $table->text('decision');
-            $table->string('path_to_spv');
+            $table->string('decision');
+            $table->text('notes');
+            $table->string('path_to_spv')->nullable();
             $table->unsignedBigInteger('fiscal_file_id');
             $table->foreign('fiscal_file_id')->references('id')->on('fiscal_files')->onDelete('cascade');
             $table->timestamps();

@@ -58,7 +58,8 @@ export default function AgendaCalander({ auth }) {
                 formatted[dateKey].push({
                     time: event.time_start,
                     title: event.title,
-                    id: event.id
+                    id: event.id,
+                    status: event.status
                 });
             }
             setFormattedEvents(formatted);
@@ -75,6 +76,20 @@ export default function AgendaCalander({ auth }) {
 
         return formattedEvents[dateKey] || [];
     }
+
+    const getStatusColor = (status) => {
+        console.log(status)
+        switch (status) {
+            case 'completed':
+                return 'green';
+            case 'not-confirmed':
+                return 'red';
+            case 'confirmed':
+                return 'orange';
+            default:
+                return 'gray';
+        }
+    };
 
     function renderCell(date) {
         const list = getTodoList(date);
@@ -110,7 +125,7 @@ export default function AgendaCalander({ auth }) {
                         {displayList.map((item, index) => (
                             <li key={index}>
                                 <Link href={`/dashboard/commitee/${item.id}/makepv`} className="hover:underline">
-                                    <GroupIcon style={{ fontSize: 20, color: 'gray' }} /> <b>{item.time}</b> - {item.title}
+                                    <GroupIcon style={{ fontSize: 20, color: 'gray', color: getStatusColor(item.status) }} /> <b>{item.time}</b> - {item.title}
                                 </Link>
                             </li>
                         ))}

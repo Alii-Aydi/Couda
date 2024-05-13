@@ -97,7 +97,7 @@ export default function MaterialTable({ auth, filesPath, action }) {
                 const selectPromises = Object.keys(selectedRows).map(id => {
                     const row = data.find(row => row.id.toString() === id);
                     if (!row) return null;
-                    if (row.status !== "pending") {
+                    if (row.status !== "pending" && row.status != "delayed") {
                         setWarning(true)
                         return null;
                     }

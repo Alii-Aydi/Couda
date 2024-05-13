@@ -11,13 +11,18 @@ function Flash() {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState('');
     const [severity, setSeverity] = useState('info');
-    const [paramValue, setParamValue] = useState('');
+    const [paramSuccessValue, setParamSuccessValue] = useState('');
+    const [paramErrorValue, setParamErrorValue] = useState('');
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const paramValueFromQuery = urlParams.get('flash.success');
-        if (paramValueFromQuery) {
-            setParamValue(paramValueFromQuery);
+        const paramSuccessValueFromQuery = urlParams.get('flash.success');
+        const paramErrorValueFromQuery = urlParams.get('flash.error');
+        if (paramSuccessValueFromQuery) {
+            setParamSuccessValue(paramSuccessValueFromQuery);
+        }
+        else if (paramErrorValueFromQuery) {
+            setParamErrorValue(paramErrorValueFromQuery);
         }
     }, []);
 
@@ -26,8 +31,12 @@ function Flash() {
             toast.success(flash.success);
         }
 
-        if (paramValue) {
-            toast.success(paramValue);
+        if (paramSuccessValue) {
+            toast.success(paramSuccessValue);
+        }
+
+        if (paramErrorValue) {
+            toast.error(paramErrorValue);
         }
 
         if (flash.error) {
@@ -39,7 +48,7 @@ function Flash() {
             setSeverity('info');
             setOpen(true);
         }
-    }, [flash.success, flash.error, flash.info, paramValue]);
+    }, [flash.success, flash.error, flash.info, paramSuccessValue]);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {

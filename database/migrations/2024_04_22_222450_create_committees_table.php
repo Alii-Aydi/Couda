@@ -19,7 +19,8 @@ class CreateCommitteesTable extends Migration
             $table->string('status')->default('not-confirmed');
             $table->string('title');
             $table->time('time_start');
-            $table->time('time_end')->nullable()->default(null);
+            $table->time('ouverture')->nullable()->default(null);
+            $table->time('cloture')->nullable()->default(null);
             // Add foreign key to the parent event
             $table->foreignId('proces_verbaux_id')->nullable()->default(null)->constrained('proces_verbaux')->onDelete('cascade');
             $table->timestamps();

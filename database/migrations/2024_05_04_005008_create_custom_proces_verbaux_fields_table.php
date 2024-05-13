@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateCustomProcesVerbauxFieldsTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('custom_proces_verbaux_fields', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('proces_verbaux_id')->constrained('proces_verbaux')->onDelete('cascade');
+            $table->string('field_name');
+            $table->text('field_value')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('custom_proces_verbaux_fields');
+    }
+}

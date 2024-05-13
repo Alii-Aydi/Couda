@@ -18,20 +18,34 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Role::create(['name' => 'admin']);
-        Role::create(['name' => 'user']);
+        Role::create(['name' => 'member']);
+        Role::create(['name' => 'secretary']);
+        Role::create(['name' => 'dossier manager']);
 
+        // Create permissions
         Permission::create(['name' => 'create a file']);
         Permission::create(['name' => 'start a committee']);
 
-        $role = Role::findByName('admin');
-        $role->givePermissionTo(Permission::all());
+        // Assign permissions to roles
+        $adminRole = Role::findByName('admin');
+        $adminRole->givePermissionTo(Permission::all()); // Admin has all permissions
 
-        User::factory()->create([
+        // For other roles, assign permissions as per your requirement
+        $memberRole = Role::findByName('member');
+        $memberRole->givePermissionTo(['create a file']);
+
+        $secretaryRole = Role::findByName('secretary');
+        $secretaryRole->givePermissionTo(['start a committee']);
+
+        $dossierManagerRole = Role::findByName('dossier manager');
+
+        $user = User::factory()->create([
             'name' => 'Ali',
             'email' => 'aliabdelkadergama@gmail.com',
             'password' => bcrypt('12345678'),
-            'role' => 'admin',
+            'cin' => '564564645',
         ]);
+        $user->assignRole("admin");
 
         //Fiscal Files
         FiscalFile::factory()->count(12)->create();

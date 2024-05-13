@@ -9,12 +9,21 @@ class ProcesVerbaux extends Model
 {
     use HasFactory;
 
+    protected $table = 'proces_verbaux';
     protected $fillable = [
         'conclusion',
+        'presedent',
+        'ouverture',
+        'cloture',
     ];
 
     public function sousProcesVerbaux()
     {
         return $this->hasMany(SousProcesVerbaux::class);
+    }
+
+    public function customFields()
+    {
+        return $this->hasMany(ProcesVerbauxSection::class);
     }
 }

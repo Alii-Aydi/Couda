@@ -12,12 +12,6 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register')
-        ->middleware('preventCache'); // Prevent caching on the registration page
-
-    Route::post('register', [RegisteredUserController::class, 'store']);
-
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login')
         ->middleware('preventCache'); // Prevent caching on the login page
@@ -40,6 +34,11 @@ Route::middleware(['guest'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register')
+        ->middleware('preventCache'); // Prevent caching on the registration page
+
+    Route::post('register', [RegisteredUserController::class, 'store']);
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiAlertCircle, FiEye, FiList, FiCalendar, FiUsers } from 'react-icons/fi';
+import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiAlertCircle, FiEye, FiList, FiCalendar, FiUsers, FiDatabase } from 'react-icons/fi';
 import { useThemeMode } from '@/Components/Contexts/ThemeContext';
 import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
@@ -8,7 +8,7 @@ import ProfileCircle from '../Profile/Partials/ProfileCircle';
 export function SidebarWithLogo() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isGestionDossiersOpen, setIsGestionDossiersOpen] = useState(false);
-    const { mode, toggleTheme } = useThemeMode();
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     return (
         <>
@@ -66,12 +66,12 @@ export function SidebarWithLogo() {
                                 <span className="ml-4">Agenda</span>
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link href="/dashboard/makepv" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <FiUsers className="w-5 h-5" />
                                 <span className="ml-4">Committee</span>
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <FiInbox className="w-5 h-5" />
@@ -79,10 +79,19 @@ export function SidebarWithLogo() {
                             </a>
                         </li>
                         <li>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <FiSettings className="w-5 h-5" />
-                                <span className="ml-4">Settings</span>
-                            </a>
+                            <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="flex items-center justify-between w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <div className="flex items-center">
+                                    <FiSettings className="w-5 h-5" />
+                                    <span className="ml-4">Settings</span>
+                                </div>
+                                {isSettingsOpen ? <FiChevronUp className="w-5 h-5" /> : <FiChevronDown className="w-5 h-5" />}
+                            </button>
+                            {isSettingsOpen && (
+                                <ul className="pl-8">
+                                    <li className="p-2"><Link href="/dashboard/settings" className="block"><FiDatabase className="inline-block mr-2" /> Infrastructure</Link></li>
+                                    <li className="p-2"><Link href="/dashboard/settings/accountManagement" className="block"><FiUsers className="inline-block mr-2" /> Gestion Comptes</Link></li>
+                                </ul>
+                            )}
                         </li>
                     </ul>
                     {/* Logout button */}

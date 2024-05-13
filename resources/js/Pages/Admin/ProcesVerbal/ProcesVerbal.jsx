@@ -5,9 +5,8 @@ import DeleteIcon from '@mui/icons-material/Cancel';
 import formatDate from '@/Utils/formatDate';
 import { useEffect } from 'react';
 
-const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, newReports, setNewReports, reportErrors, formErrors }) => {
+const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, newReports, setNewReports, reportErrors, formErrors, time, setTime }) => {
     const [president, setPresident] = useState('');
-    const [time, setTime] = useState('');
     const [showAddReportField, setShowAddReportField] = useState(false);
 
     const handleReportAdd = () => {

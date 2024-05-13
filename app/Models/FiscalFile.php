@@ -52,4 +52,9 @@ class FiscalFile extends Model
     {
         return $this->belongsToMany(Committee::class);
     }
+
+    public function sections()
+    {
+        return $this->hasMany(ProcesVerbauxSection::class);
+    }
 }

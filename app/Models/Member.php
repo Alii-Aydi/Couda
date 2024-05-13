@@ -8,6 +8,8 @@ class Member extends Model
 {
     protected $table = 'committee_user';
     protected $fillable = ['presence'];
+    protected $primaryKey = ['committee_id', 'user_id'];
+    public $incrementing = false;
 
     public function committee()
     {

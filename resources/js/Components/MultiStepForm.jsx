@@ -13,15 +13,16 @@ import { Checkbox, Divider, FormControl, FormControlLabel, FormGroup, FormHelper
 import MeetingMinutes from '@/Pages/Admin/ProcesVerbal/ProcesVerbal';
 import { useEffect } from 'react';
 import SousPv from '@/Pages/Admin/ProcesVerbal/SousPv';
+import { Inertia } from '@inertiajs/inertia';
 
 export default function MultiStepForm({ commitee }) {
-    const members = commitee.members.map(mem => mem.name)
+    const members = commitee.members.map(mem => ({ 'name': mem.name, "id": mem.id }));
     const initialFormData = {
         'presedent': '',
         'ouverture': '',
         'cloture': '',
         // Add members' names as keys with initial value ''
-        ...Object.fromEntries(members.map(name => [name, false])),
+        'members': { ...Object.fromEntries(members.map(mem => [mem.id, [false, mem.name]])) },
     };
     // Define steps with fields array
     const steps = [
@@ -42,16 +43,16 @@ export default function MultiStepForm({ commitee }) {
     const [decisions, setDecisions] = useState(Array(commitee.fiscal_files.length).fill({ "decisions": '', "notes": '' }));
     const [filesErrors, setFilesErrors] = useState([]);
 
+    const [time, setTime] = useState('');
+
     useEffect(() => {
         const listAbs = []
         const listAtt = []
-        for (let key in formData) {
-            if (formData[key] !== '' && !['presedent', 'ouverture', 'cloture'].includes(key)) {
-                if (!formData[key]) {
-                    listAbs.push(key)
-                } else {
-                    listAtt.push(key)
-                }
+        for (let key in formData.members) {
+            if (!formData.members[key][0]) {
+                listAbs.push(formData.members[key][1])
+            } else {
+                listAtt.push(formData.members[key][1])
             }
         }
         setAbsences(listAbs)
@@ -61,7 +62,7 @@ export default function MultiStepForm({ commitee }) {
 
     const validateForm = () => {
         const errors = {};
-        if (activeStep === 0 && steps[activeStep].fields.some(field => formData[field])) {
+        if (activeStep === 0 && steps[activeStep].fields.some(field => formData.members[field.id][0])) {
             return true;
         } else if (activeStep === 0) {
             errors['checkbox'] = 'Un member est requis au moins';
@@ -74,6 +75,7 @@ export default function MultiStepForm({ commitee }) {
             }));
 
             steps[activeStep].fields.forEach((field) => {
+                if (Array.isArray(formData[field])) return
                 if (formData[field].trim().length < 3) {
                     errors[field] = true;
                 } else {
@@ -125,7 +127,8 @@ export default function MultiStepForm({ commitee }) {
             const dataToSend = {
                 formData: formData,
                 reportsData: newReports,
-                decisionsData: decisions
+                decisionsData: decisions,
+                times: { "start": time, "end": new Date().toLocaleTimeString() }
             };
 
             const response = await fetch(`/dashboard/commitee/${commitee.id}/makepv`, {
@@ -138,9 +141,14 @@ export default function MultiStepForm({ commitee }) {
             });
 
             if (response.ok) {
-                console.log('Data sent successfully');
+                Inertia.visit('/dashboard?flash.success=Commitee realiser avec succee')
             } else {
-                console.error('Failed to send data:', response.statusText);
+                console.log(response.status)
+                if (response.status === 403) {
+                    Inertia.visit('/dashboard/agenda?flash.error=Commitee est deja terminer')
+                } else {
+                    console.error('Failed to send data:', response.statusText);
+                }
             }
         } catch (error) {
             console.error('An error occurred:', error.message);
@@ -150,7 +158,16 @@ export default function MultiStepForm({ commitee }) {
     const handleChange = (event) => {
         const { name, checked, value } = event.target;
         if (event.target.type === 'checkbox') {
-            setFormData({ ...formData, [name]: checked });
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                members: {
+                    ...prevFormData.members,
+                    [name]: [
+                        checked,
+                        prevFormData.members[name][1], // Keep the name unchanged
+                    ],
+                },
+            }));
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -196,13 +213,13 @@ export default function MultiStepForm({ commitee }) {
                             <FormHelperText sx={{ mx: 0 }}>{formErrors['checkbox']}</FormHelperText>
                             {steps[activeStep].fields.map((field, i) => (
                                 <FormControlLabel
-                                    key={field}
+                                    key={field.id}
                                     control={<Checkbox
-                                        checked={formData[field]}
+                                        checked={formData.members[field.id][0]}
                                         onChange={handleChange}
-                                        name={field}
+                                        name={field.id}
                                     />}
-                                    label={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
+                                    label={field.name.charAt(0).toUpperCase() + field.name.slice(1).replace(/([A-Z])/g, ' $1').trim()}
                                 />
                             ))}
                         </FormControl>
@@ -219,6 +236,8 @@ export default function MultiStepForm({ commitee }) {
                             setNewReports={setNewReports}
                             newReports={newReports}
                             formErrors={formErrors}
+                            time={time}
+                            setTime={setTime}
                         />
                     )}
 

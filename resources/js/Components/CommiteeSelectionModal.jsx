@@ -16,7 +16,7 @@ function BigModal({ isOpen, onClose, handleConfirm, selectedCommittee, setSelect
         try {
             const response = await fetch('/dashboard/commitee/list'); // Adjust the endpoint accordingly
             const data = await response.json();
-            setCommittees(data);
+            setCommittees(data.filter(c => c.status !== "completed"));
         } catch (error) {
             console.error('Error fetching committees:', error);
         }

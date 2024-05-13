@@ -7,13 +7,21 @@ const SousPv = ({ fiscal_files, filesErrors, decisions, setDecisions }) => {
 
     const handleDecisionChange = (index, value) => {
         const newDecisions = [...decisions];
-        newDecisions[index] = { ...newDecisions[index], decisions: value }; // Update the 'decisions' property
+        newDecisions[index] = {
+            ...newDecisions[index],
+            id: fiscal_files[index].id, // Add fiscal file ID to the object
+            decisions: value
+        };
         setDecisions(newDecisions);
     };
 
     const handleNotesChange = (index, value) => {
         const newDecisions = [...decisions];
-        newDecisions[index] = { ...newDecisions[index], notes: value }; // Update the 'notes' property
+        newDecisions[index] = {
+            ...newDecisions[index],
+            id: fiscal_files[index].id, // Add fiscal file ID to the object
+            notes: value
+        };
         setDecisions(newDecisions);
     };
 

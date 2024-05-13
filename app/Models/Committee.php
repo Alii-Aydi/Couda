@@ -15,7 +15,8 @@ class Committee extends Model
         'status',
         'title',
         'time_start',
-        'time_end'
+        'ouverture',
+        'cloture'
     ];
 
     public function procesVerbaux()

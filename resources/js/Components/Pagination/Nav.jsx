@@ -142,9 +142,7 @@ export default function Navbar({ user }) {
                             <a href="/login" className="text-sm font-semibold leading-6 text-gray-900">
                                 Log in
                             </a>
-                            <a href="/register" className="ml-4 text-sm font-semibold leading-6 text-gray-900">
-                                register
-                            </a>
+
                         </>
                     )}
                 </div>

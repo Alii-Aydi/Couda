@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'cin', // Adding 'cin' field
+        'profile_pic', // Adding 'profile_pic' field
     ];
 
     /**
