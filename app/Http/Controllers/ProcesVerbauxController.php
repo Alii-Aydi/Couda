@@ -9,6 +9,7 @@ use App\Models\Member;
 use App\Models\ProcesVerbaux;
 use App\Models\ProcesVerbauxSection;
 use App\Models\SousProcesVerbaux;
+use App\Services\ProcesVerbauxService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -73,8 +74,6 @@ class ProcesVerbauxController extends Controller
                 //presence
                 $committee = Committee::findOrFail($committeeId);
 
-                Log::alert("mmm");
-
                 if ($committee->status === 'completed' || $committee->status === 'not-confirmed') {
                     return response()->json(['error' => 'The operation is not allowed because the committee is already completed'], 403);
                 }
@@ -123,6 +122,17 @@ class ProcesVerbauxController extends Controller
 
                 $committee->ouverture = $start;
                 $committee->cloture = $end;
+
+                // Generate PDF and save path
+                $pdfData = [
+                    'committee' => $committee,
+                    'pv' => $pv,
+                    'members' => $committee->members()->withPivot('presence')->get()
+                ];
+                Log::alert($committee->members()->withPivot('presence')->get());
+                $pdfPath = ProcesVerbauxService::generatePDF($pdfData);
+                $pv->pdf = $pdfPath;
+                $pv->save();
 
                 // Step 5: Associate Proces Verbaux with Committee
                 $committee->proces_verbaux_id = $pv->id;

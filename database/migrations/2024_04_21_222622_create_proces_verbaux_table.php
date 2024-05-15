@@ -18,6 +18,7 @@ class CreateProcesVerbauxTable extends Migration
             $table->string('presedent');
             $table->text('ouverture');
             $table->text('cloture');
+            $table->string('pdf')->nullable();
             $table->timestamps();
         });
 

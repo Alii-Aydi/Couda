@@ -15,6 +15,7 @@ class ProcesVerbaux extends Model
         'presedent',
         'ouverture',
         'cloture',
+        'pdf'
     ];
 
     public function sousProcesVerbaux()
