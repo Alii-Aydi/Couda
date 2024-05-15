@@ -8,6 +8,7 @@ use App\Interfaces\StorageServiceInterface;
 use App\Services\FiscalFileService;
 use App\Services\FiscalFilesLogsService;
 use App\Services\StorageService;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -4,8 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\{
     AgendaController,
+    ContactController,
     FiscalFileController,
     FiscalFilesLogsController,
+    ProcesVerbauxController,
     ProfileController,
     ReclamationController,
     SettingsControler,
@@ -66,13 +68,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/agenda', [AgendaController::class, 'show']);
         Route::get('/commitee/list', [AgendaController::class, 'list']);
         Route::post('/commitee', [AgendaController::class, 'addCommitee']);
-
-        Route::get('/commitee/{id}/makepv', [AgendaController::class, 'showMakePV'])->name('makepv');
-        Route::post('/commitee/{id}/makepv', [AgendaController::class, 'storePV'])->name('commitee.store');
         Route::put('/commitee/{id}/fiscalfile/{fid}', [AgendaController::class, 'attachFiscalFileToCommitee']);
 
+        // Procés-Verbaux
+        Route::get('/proces-verbaux/list', [ProcesVerbauxController::class, 'index'])->name('proces-verbaux.index');
+        Route::get('/commitee/{id}/makepv', [ProcesVerbauxController::class, 'showMakePV'])->name('makepv');
+        Route::post('/commitee/{id}/makepv', [ProcesVerbauxController::class, 'storePV'])->name('commitee.store');
+
         // Settings
-        Route::get('/settings/accountManagement', [SettingsControler::class, 'index'])->name('setting.users');
+        Route::get('/settings/accountManagement', [SettingsControler::class, 'account'])->name('setting.users');
+        Route::get('/settings/infra', [SettingsControler::class, 'infra'])->name('setting.infra');
+
+        Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
+        Route::post('/contacts/add', [ContactController::class, 'store'])->name('contacts.store');
+        Route::get('/contacts/add', [ContactController::class, 'create'])->name('contacts.create');
+        Route::delete('/contacts/{contact}/delete', [ContactController::class, 'destroy'])->name('contacts.destroy');
+        Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name('contacts.edit');
+        Route::put('/contacts/{contact}/edit', [ContactController::class, 'update'])->name('contacts.update');
     });
 
     // Users

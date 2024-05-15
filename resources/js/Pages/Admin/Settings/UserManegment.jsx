@@ -4,6 +4,7 @@ import { Avatar, Button, Table, TableBody, TableCell, TableContainer, TableHead,
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 export default function UserManegment({ auth }) {
     const [users, setUsers] = useState([]);
@@ -60,6 +61,7 @@ export default function UserManegment({ auth }) {
                             color="primary"
                             href="/register"
                             className="ml-4 mb-4"
+                            startIcon={<PersonAddIcon />}
                         >
                             Ajouter Nouveau Utilisateur
                         </Button>
