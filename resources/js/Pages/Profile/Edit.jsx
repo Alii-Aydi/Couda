@@ -3,6 +3,7 @@ import DeleteUserForm from '../../Components/Profile/DeleteUserForm';
 import UpdatePasswordForm from '../../Components/Profile/UpdatePasswordForm';
 import UpdateProfileInformationForm from '../../Components/Profile/UpdateProfileInformationForm';
 import { Head } from '@inertiajs/react';
+import ProfilePictureInput from '@/Components/Profile/UploadPicture';
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
     return (
@@ -15,6 +16,10 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
             <div className="mt-16 py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                        <div className="py-4 sm:py-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                            <ProfilePictureInput initialImage={auth.user.profile_pic} userId={auth.user.id} className="max-w-xl" />
+                        </div>
+
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}

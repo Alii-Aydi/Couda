@@ -1,72 +1,132 @@
-<!-- Import the JavaScript file -->
-<script src="{{ asset('js/Utils/formatDate.js') }}"></script>
+<!DOCTYPE html>
+<html lang="en">
 
-<div class="p-8 bg-white shadow-md space-y-4 flex flex-col"> <!-- Use a div with padding, background, and shadow -->
-    <h1 class="text-xl font-bold">Procès-verbal de la {{ $committee->id }}e séance</h1>
-    <p class="text-lg">Ministère des Finances, Tunisie</p>
-    <!-- Use a span to hold the formatted date -->
-    <p class="text-lg"><span id="formattedDate"></span>, {{ $committee->ouverture }}</p>
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procès-verbal</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+        }
 
-<script>
-    // Call formatDate function after it's loaded
-    document.addEventListener("DOMContentLoaded", function() {
-        // Get the date from PHP variable
-        var committeeDate = {!! json_encode($committee->date) !!};
+        .container {
+            padding: 8px;
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 800px;
+        }
 
-        // Format the date using formatDate function
-        var formattedDate = formatDate(committeeDate);
+        .text-center {
+            text-align: center;
+        }
 
-        // Display the formatted date
-        document.getElementById("formattedDate").textContent = formattedDate;
-    });
-</script>
-<!-- Corrected $committee->ouverture -->
-<hr /> <!-- Add a horizontal line between sections -->
-<h2 class="text-lg font-bold">Présents :</h2>
-<ul class="list-disc ml-6">
-    @foreach ($members as $member)
-        @if ($member->pivot->presence == 'present')
-            <li class="text-sm">{{ $member->name }}</li>
-        @endif
-    @endforeach
-</ul>
-<hr />
-<h2 class="text-lg font-bold">Absents :</h2>
-<ul class="list-disc ml-6">
-    @php
-        $i = 0; // Initialize the absence counter
-    @endphp
-    @foreach ($members as $member)
-        @if ($member->pivot->presence == 'absent')
+        .text-lg {
+            font-size: 1.125rem;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+        }
+
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .list-disc {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        .text-gray-500 {
+            color: #6B7280;
+        }
+
+        .mt-5 {
+            margin-top: 1.25rem;
+        }
+
+        .p-10 {
+            padding: 2.5rem;
+        }
+
+        .signature {
+            text-align: right;
+            padding-top: 2.5rem;
+            margin-top: 1.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="text-center">
+            <h1 class="text-xl font-bold">Procès-verbal de la {{ $committee->id }}e séance</h1>
+            <p class="text-lg">Ministère des Finances, Tunisie</p>
+            <p class="text-lg"><span id="formattedDate">{{ date('Y/m/d') }}</span></p>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var committeeDate = {!! json_encode($committee->date) !!};
+                var formattedDate = formatDate(committeeDate);
+                document.getElementById("formattedDate").textContent = formattedDate;
+            });
+        </script>
+
+        <hr />
+        <h3 class="text-lg font-bold">Présents :</h3>
+        <ul class="list-disc">
+            @foreach ($members as $member)
+                @if ($member->pivot->presence == 'present')
+                    <li class="text-sm">{{ $member->name }}</li>
+                @endif
+            @endforeach
+        </ul>
+
+        <hr />
+        <h3 class="text-lg font-bold">Absents :</h3>
+        <ul class="list-disc">
             @php
-                $i++; // Increment the absence counter
+                $i = 0;
             @endphp
-            <li class="text-sm">{{ $member->name }}</li>
-        @endif
-    @endforeach
-    @if ($i == 0)
-        <p class="italic text-gray-500">Aucune absence</p>
-    @endif
-</ul>
-<hr />
-<h2 class="text-lg font-bold">Ouverture de la séance :</h2>
-<div class="flex">
-    <p>La séance est ouverte à {{ $committee->ouverture }}, avec président(e) M. {{ $pv->presedent }}</p>
-    <!-- Accessing 'president' from $pv -->
-</div>
-<p>{{ $pv->ouverture }}</p> <!-- Corrected $pv->ouverture -->
-@foreach ($pv->customFields as $customField)
-    <!-- Accessing custom fields through $pv -->
-    <div class="mb-4">
-        <h3 class="mt-2">Section N°{{ $loop->index + 1 }} :</h3> <!-- Using $loop to get index -->
-        <p>Titre: {{ $customField->field_name }}</p>
-        <p>Description: {{ $customField->field_value }}</p>
+            @foreach ($members as $member)
+                @if ($member->pivot->presence == 'absent')
+                    @php
+                        $i++;
+                    @endphp
+                    <li class="text-sm">{{ $member->name }}</li>
+                @endif
+            @endforeach
+            @if ($i == 0)
+                <p class="italic text-gray-500">Aucune absence</p>
+            @endif
+        </ul>
+
+        <hr />
+        <h2 class="text-lg font-bold">Ouverture de la séance :</h2>
+        <p>La séance est ouverte à {{ $committee->ouverture }}, avec président(e) M. {{ $pv->presedent }}</p>
+        <p>{{ $pv->ouverture }}</p>
+        @foreach ($pv->customFields as $customField)
+            <div class="mb-4">
+                <h3>{{ $customField->field_name }}</h3>
+                <p>{{ $customField->field_value }}</p>
+            </div>
+        @endforeach
+
+        <hr />
+        <h3 class="text-lg font-bold">Clôture de la séance :</h3>
+        <p>La séance est terminée à {{ $committee->cloture }}</p>
+        <p>{{ $pv->cloture }}</p>
+
+        <hr />
+        <div class="signature">Signature</div>
     </div>
-@endforeach
-<hr />
-<h2 class="text-lg font-bold">Clôture de la séance :</h2>
-<p>{{ $committee->cloture }}</p> <!-- Assuming 'cloture' is the committee's cloture attribute -->
-<hr />
-<div class="mt-auto self-end p-10">Signature</div>
-</div>
+</body>
+
+</html>

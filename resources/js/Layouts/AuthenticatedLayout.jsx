@@ -7,7 +7,7 @@ export default function Authenticated({ user, children }) {
         <ThemeProvider>
             <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
                 <Flash></Flash>
-                <SidebarWithLogo ></SidebarWithLogo>
+                <SidebarWithLogo user={user}></SidebarWithLogo>
 
                 <main className="p-4 sm:ml-64">
                     {children}

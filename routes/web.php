@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\{
     AgendaController,
     ContactController,
+    DashboardController,
     FiscalFileController,
     FiscalFilesLogsController,
     ProcesVerbauxController,
@@ -31,10 +32,6 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
-    })->name('dashboard');
 
     // Profile
     Route::prefix('profile')->group(function () {
@@ -45,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Fiscal Files
     Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/createFile', [FiscalFileController::class, 'create'])->name('file.create');
         Route::post('/createFile', [FiscalFileController::class, 'store'])->name('file.store');
         Route::get('/fiscalFiles', [FiscalFileController::class, 'all'])->name('file.all');
@@ -90,6 +88,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Users
     Route::get('/users/{id}', [UserController::class, 'getUserById']);
     Route::get('/users', [UserController::class, 'getAll']);
+    Route::post('/profile/{user}/savepic', [ProfileController::class, 'saveProfilePicture'])->name('profile.savepic');
 
     // Storage
     Route::get('/files/{filename}', [StorageController::class, 'showCentralReport'])->name('reports.show');

@@ -5,10 +5,15 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
 
-export function SidebarWithLogo() {
+export function SidebarWithLogo({ user }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isGestionDossiersOpen, setIsGestionDossiersOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+
+    const name = user.profile_pic?.replace(/\//g, ' ');
+    const fileUrl = `/files/${name}`;
+
 
     return (
         <>
@@ -28,7 +33,9 @@ export function SidebarWithLogo() {
                         <div className='flex items-center'>
                             <ThemeToggler></ThemeToggler>
                             <div className="mx-4"></div>
-                            <ProfileCircle src={"https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"} alt={"Profile Pic"}></ProfileCircle>
+                            <Link href='/profile' alt='profile'>
+                                <ProfileCircle src={fileUrl} alt={"Profile Pic"}></ProfileCircle>
+                            </Link>
                         </div>
                     </div>
                 </div>

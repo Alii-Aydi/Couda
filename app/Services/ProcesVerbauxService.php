@@ -15,6 +15,6 @@ class ProcesVerbauxService
         $pdfPath = 'proces-verbaux/' . uniqid() . '.pdf';
         Storage::disk('private')->put($pdfPath, $pdf->output());
 
-        return $pdfPath;
+        return 'private/' . $pdfPath;
     }
 }
