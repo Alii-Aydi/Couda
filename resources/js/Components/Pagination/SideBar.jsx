@@ -34,7 +34,12 @@ export function SidebarWithLogo({ user }) {
                             <ThemeToggler></ThemeToggler>
                             <div className="mx-4"></div>
                             <Link href='/profile' alt='profile'>
-                                <ProfileCircle src={fileUrl} alt={"Profile Pic"}></ProfileCircle>
+                                {user.profile_pic ? (
+                                    <ProfileCircle src={fileUrl} alt={"Profile Pic"}></ProfileCircle>
+                                ) : (
+                                    <ProfileCircle src={"/imgs/avatar.png"} alt={"Profile Pic"}></ProfileCircle>
+                                )
+                                }
                             </Link>
                         </div>
                     </div>

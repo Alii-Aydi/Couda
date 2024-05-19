@@ -21,12 +21,6 @@ class CreateProcesVerbauxTable extends Migration
             $table->string('pdf')->nullable();
             $table->timestamps();
         });
-
-        Schema::create('proces_verbaux_signatures', function (Blueprint $table) {
-            $table->foreignId('proces_verbaux_id')->constrained('proces_verbaux')->onDelete('cascade');
-            $table->foreignId('signature_id')->constrained('signatures')->onDelete('cascade');
-            $table->primary(['proces_verbaux_id', 'signature_id']);
-        });
     }
 
     /**

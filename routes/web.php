@@ -78,8 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/settings/infra', [SettingsControler::class, 'infra'])->name('setting.infra');
 
         Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
-        Route::post('/contacts/add', [ContactController::class, 'store'])->name('contacts.store');
         Route::get('/contacts/add', [ContactController::class, 'create'])->name('contacts.create');
+        Route::post('/contacts/add', [ContactController::class, 'store'])->name('contacts.store');
         Route::delete('/contacts/{contact}/delete', [ContactController::class, 'destroy'])->name('contacts.destroy');
         Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name('contacts.edit');
         Route::put('/contacts/{contact}/edit', [ContactController::class, 'update'])->name('contacts.update');

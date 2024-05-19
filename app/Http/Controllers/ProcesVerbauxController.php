@@ -30,7 +30,11 @@ class ProcesVerbauxController extends Controller
     }
     public function showMakePV($commiteeId)
     {
-        $committee = Committee::with('members', 'fiscalFiles.reports')->findOrFail($commiteeId);
+        $committee = Committee::with([
+            'members',
+            'fiscalFiles.reports'
+        ])->findOrFail($commiteeId);
+
         if ($committee->status === 'completed' || $committee->status === 'not-confirmed') {
             return redirect('/dashboard/agenda')->with(['error' => 'The operation is not allowed because the committee is already completed'], 403);
         }
@@ -48,7 +52,7 @@ class ProcesVerbauxController extends Controller
                 'formData.ouverture' => 'required|string',
                 'formData.cloture' => 'required|string',
                 'formData.members' => 'required|array|min:1',
-                'formData.members.*' => 'required|array|size:2',
+                'formData.members.*' => 'required|array|size:3',
                 'formData.members.*.0' => 'required|boolean',
                 'formData.members.*.1' => 'required|string',
                 // Times

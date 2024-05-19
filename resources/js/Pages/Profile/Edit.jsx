@@ -4,6 +4,7 @@ import UpdatePasswordForm from '../../Components/Profile/UpdatePasswordForm';
 import UpdateProfileInformationForm from '../../Components/Profile/UpdateProfileInformationForm';
 import { Head } from '@inertiajs/react';
 import ProfilePictureInput from '@/Components/Profile/UploadPicture';
+import SignatureUploadInput from '@/Components/Profile/UploadSignature';
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
     return (

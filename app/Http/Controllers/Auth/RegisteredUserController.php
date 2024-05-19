@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Signature;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -52,6 +53,7 @@ class RegisteredUserController extends Controller
             ],
             'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'cin' => 'required|string|max:255',
+            'signature' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = User::create([
@@ -67,6 +69,15 @@ class RegisteredUserController extends Controller
             $cin = str_replace(' ', '_', $user->cin);
             $profilePicPath = Storage::put('private/users/' . $cin, $profilePic);
             $user->profile_pic = $profilePicPath;
+            $user->save();
+        }
+
+        if ($request->hasFile('signature')) {
+
+            $signatureFile = $request->file('signature');
+            $signaturePath = Storage::put('private/signatures/' . $user->id, $signatureFile);
+
+            $user->signature_path = $signaturePath;
             $user->save();
         }
 

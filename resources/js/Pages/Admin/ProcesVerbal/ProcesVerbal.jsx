@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Divider, Select, MenuItem, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Cancel';
 import formatDate from '@/Utils/formatDate';
-import { useEffect } from 'react';
 
 const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, newReports, setNewReports, reportErrors, formErrors, time, setTime }) => {
-    const [president, setPresident] = useState('');
+    const [president, setPresident] = useState(null);
     const [showAddReportField, setShowAddReportField] = useState(false);
+
+    useEffect(() => {
+        setTime(new Date().toLocaleTimeString());
+    }, []);
 
     const handleReportAdd = () => {
         setShowAddReportField(true); // Show the new report fields when the button is clicked
@@ -20,21 +23,16 @@ const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, ne
         setNewReports(updatedReports);
     };
 
-
     const handleReportChange = (index, field, value) => {
         const updatedReports = [...newReports];
         updatedReports[index][field] = value;
         setNewReports(updatedReports);
     };
 
-    useEffect(() => {
-        setTime(new Date().toLocaleTimeString())
-    }, [])
-
-
     const handlePresidentChange = (event) => {
-        setPresident((e) => event.target.value);
-        setFormData({ ...formData, ...{ 'presedent': event.target.value } })
+        const selectedPresident = event.target.value;
+        setPresident(selectedPresident);
+        setFormData({ ...formData, presedent: selectedPresident.name });
     };
 
     const handleChange = (event) => {
@@ -50,7 +48,18 @@ const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, ne
             <Divider /> {/* Add a divider between sections */}
             <Typography variant="h5" component="h2" className="text-lg font-bold">Présents :</Typography>
             <ul className="list-disc ml-6">
-                {attende.map((attendee, index) => <Typography key={index} variant="body2" component="li">{attendee}</Typography>)}
+                {attende.map((attendee, index) => {
+                    const name = attendee.signature.replace(/\//g, ' ');
+                    const fileUrl = `/files/${name}`;
+                    return (
+                        <Typography key={index} variant="body2" component="li" className='justify-between w-1/2' style={{ display: 'flex', alignItems: 'center' }}>
+                            {attendee.name}
+                            <span style={{ marginLeft: '8px' }}>
+                                <img src={fileUrl} alt="signature" style={{ width: '64px', height: '32px' }} />
+                            </span>
+                        </Typography>
+                    );
+                })}
             </ul>
             <Divider />
             <Typography variant="h5" component="h2" className="text-lg font-bold">Absents :</Typography>
@@ -64,7 +73,7 @@ const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, ne
             <Divider />
             <Typography variant="h5" component="h2" className="text-lg font-bold">Ouverture de la séance :</Typography>
             <div className="flex">
-                <Typography variant="body1">La séance est ouverte à {time}, avec president(e) M. </Typography>
+                <Typography variant="body1">La séance est ouverte à {time}, avec président(e) M. </Typography>
                 <Select
                     value={president}
                     onChange={handlePresidentChange}
@@ -73,13 +82,13 @@ const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, ne
                     variant="outlined"
                     sx={{ width: '120px', mt: '-10px', height: '50px' }} // Adjust the width of the Select component
                     error={formErrors.presedent}
-                    helperText={formErrors.presedent ? 'Sélectionner le président' : ''}
+                    renderValue={(selected) => selected ? selected.name : 'Sélectionner le président'}
                 >
                     <MenuItem value="" disabled>
                         Sélectionner le président
                     </MenuItem>
                     {attende.map((attendee, index) => (
-                        <MenuItem key={index} value={attendee}>{attendee}</MenuItem>
+                        <MenuItem key={index} value={attendee}>{attendee.name}</MenuItem>
                     ))}
                 </Select>
             </div>
@@ -136,11 +145,11 @@ const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, ne
                 </button>
             </div>
             <Divider />
-            <Typography variant="h5" component="h2" className="text-lg font-bold">Clotûre de la séance :</Typography>
+            <Typography variant="h5" component="h2" className="text-lg font-bold">Clôture de la séance :</Typography>
             <TextField
                 id="cloture"
                 name="cloture"
-                label="Cloture"
+                label="Clôture"
                 multiline
                 fullWidth
                 rows={4}
@@ -148,10 +157,15 @@ const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, ne
                 value={formData.cloture}
                 onChange={handleChange}
                 error={formErrors.cloture}
-                helperText={formErrors.cloture ? 'Cloture est obligatoire' : ''}
+                helperText={formErrors.cloture ? 'Clôture est obligatoire' : ''}
             />
             <Divider />
-            <div className="mt-auto self-end p-10">Signature</div>
+            <div className="mt-auto self-end p-10">
+                {president ? (
+                    <img src={`/files/${president.signature.replace(/\//g, ' ')}`} alt="signature" style={{ width: '64px', height: '32px' }} />
+                ) : <p>Signature</p>
+                }
+            </div>
         </Paper>
     );
 };

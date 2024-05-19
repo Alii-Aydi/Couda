@@ -4,7 +4,13 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import axios from 'axios';
 
 const ProfilePictureInput = ({ initialImage, userId }) => {
-    const [image, setImage] = useState(initialImage);
+    let initialImageUrl = '';
+    if (initialImage) {
+        const name = initialImage.replace(/\//g, ' ');
+        initialImageUrl = `/files/${name}`;
+    }
+
+    const [image, setImage] = useState(initialImageUrl);
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploadStatus, setUploadStatus] = useState('');

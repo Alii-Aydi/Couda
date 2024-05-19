@@ -9,6 +9,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { Divider } from 'rsuite';
+import formatDate from '@/Utils/formatDate';
 
 export default function ListProcesVerbaux({ auth, pvs }) {
     const [search, setSearch] = useState('');
@@ -105,7 +106,7 @@ export default function ListProcesVerbaux({ auth, pvs }) {
                                         rel="noopener noreferrer"
                                     >
                                         <img src="/imgs/pdf.png" className="w-10 mr-2" alt="PDF icon" />
-                                        <p>Proces-verbal n° {pv.id}</p>
+                                        <p>{`PV n° ${pv.id}/${formatDate(pv.created_at)}`}</p>
                                     </a>
                                 </li>
                             );

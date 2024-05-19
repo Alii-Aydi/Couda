@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Signature;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -72,12 +74,12 @@ class ProfileController extends Controller
 
         if ($request->hasFile('profile_pic')) {
             if ($user->profile_pic) {
-                Storage::disk('private')->delete($user->profile_pic);
+                Storage::delete($user->profile_pic);
             }
 
             $profilePic = $request->file('profile_pic');
             $cin = str_replace(' ', '_', $user->cin);
-            $profilePicPath = Storage::put('users/' . $cin, $profilePic); // Specify the 'private' disk
+            $profilePicPath = Storage::put('private/users/' . $cin, $profilePic); // Specify the 'private' disk
             $user->profile_pic = $profilePicPath;
             $user->save();
 

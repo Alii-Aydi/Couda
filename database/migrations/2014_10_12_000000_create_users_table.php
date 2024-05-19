@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('cin')->unique(); // Adding cin as unique
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->foreignId('signature_id')->nullable();
+            $table->string('signature_path')->nullable();
             $table->string('profile_pic')->nullable(); // Adding profile_pic
             $table->rememberToken();
             $table->timestamps();

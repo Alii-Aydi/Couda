@@ -16,13 +16,13 @@ import SousPv from '@/Pages/Admin/ProcesVerbal/SousPv';
 import { Inertia } from '@inertiajs/inertia';
 
 export default function MultiStepForm({ commitee }) {
-    const members = commitee.members.map(mem => ({ 'name': mem.name, "id": mem.id }));
+    const members = commitee.members.map(mem => ({ 'name': mem.name, "id": mem.id, 'signature': mem.signature_path }));
     const initialFormData = {
         'presedent': '',
         'ouverture': '',
         'cloture': '',
         // Add members' names as keys with initial value ''
-        'members': { ...Object.fromEntries(members.map(mem => [mem.id, [false, mem.name]])) },
+        'members': { ...Object.fromEntries(members.map(mem => [mem.id, [false, mem.name, mem.signature ? mem.signature : '']])) },
     };
     // Define steps with fields array
     const steps = [
@@ -44,7 +44,6 @@ export default function MultiStepForm({ commitee }) {
     const [filesErrors, setFilesErrors] = useState([]);
 
     const [time, setTime] = useState('');
-
     useEffect(() => {
         const listAbs = []
         const listAtt = []
@@ -52,7 +51,7 @@ export default function MultiStepForm({ commitee }) {
             if (!formData.members[key][0]) {
                 listAbs.push(formData.members[key][1])
             } else {
-                listAtt.push(formData.members[key][1])
+                listAtt.push({ 'name': formData.members[key][1], 'signature': formData.members[key][2] })
             }
         }
         setAbsences(listAbs)
@@ -164,7 +163,8 @@ export default function MultiStepForm({ commitee }) {
                     ...prevFormData.members,
                     [name]: [
                         checked,
-                        prevFormData.members[name][1], // Keep the name unchanged
+                        prevFormData.members[name][1],
+                        prevFormData.members[name][2]
                     ],
                 },
             }));

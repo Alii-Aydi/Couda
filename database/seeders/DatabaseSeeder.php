@@ -44,8 +44,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'aliabdelkadergama@gmail.com',
             'password' => bcrypt('12345678'),
             'cin' => '564564645',
+            'signature_path' => ''
         ]);
         $user->assignRole("admin");
+        $user->signature_path = '/private/signatures/1/AdminSignature.jpg';
+        $user->save();
 
         //Fiscal Files
         FiscalFile::factory()->count(12)->create();
