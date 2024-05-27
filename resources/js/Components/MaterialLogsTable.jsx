@@ -28,12 +28,12 @@ export default function MaterialLogsTable({ auth }) {
         () => [
             {
                 accessorKey: 'fiscal_file_id',
-                header: 'File ID',
+                header: 'Dossier ID',
                 size: 10,
             },
             {
                 accessorKey: 'created_at',
-                header: 'Logged At',
+                header: 'Créé à',
                 Cell: ({ cell }) => new Intl.DateTimeFormat('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -51,7 +51,7 @@ export default function MaterialLogsTable({ auth }) {
             },
             {
                 accessorKey: 'updated_by',
-                header: 'Updated By',
+                header: 'Mis à jour par',
                 Cell: ({ cell }) => userNames[cell.getValue()] || 'Loading...',
                 size: 10,
             },

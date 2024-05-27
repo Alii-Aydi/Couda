@@ -18,15 +18,14 @@ export default function Welcome({ auth, flash }) {
                                 Gestion Des Dossiers Fiscales
                             </h1>
                             <p className="mt-6 text-lg leading-8 text-white">
-                                Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-                                fugiat veniam occaecat fugiat aliqua.
+                                Simplifiez votre gestion fiscale
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
                                 <a
                                     href="#"
                                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
-                                    Get started
+                                    Commencer
                                 </a>
                             </div>
                         </div>
@@ -62,14 +61,12 @@ export default function Welcome({ auth, flash }) {
                         </div>
                     </div>
                     <div className="container mx-auto flex flex-wrap px-4 sm:px-6 lg:px-8">
-                        <div className="lg:w-1/2 text-lg max-w-prose mx-auto mb-6 lg:mb-0">
+                        <div id='a-propos' className="lg:w-1/2 text-lg max-w-prose mx-auto mb-6 lg:mb-0">
                             <h2 className="text-3xl text-center lg:text-left leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-                                About Us
+                                à propos
                             </h2>
                             <p className="mt-8 text-xl text-gray-300 leading-8">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita quasi fugit, sequi iusto officiis sit ab esse sed laudantium at quod assumenda, error possimus rerum exercitationem? Possimus officia nobis quis.
-                                Rem velit reiciendis nisi dolore perferendis debitis, aspernatur, a et necessitatibus modi quidem voluptatem molestias deserunt autem labore hic? Voluptate, sapiente repudiandae natus id temporibus rem consequatur perferendis quia laboriosam.
-                                Dolor ratione recusandae corporis incidunt molestiae aperiam est esse error non! Porro minus eligendi unde magnam reprehenderit iusto consequatur, aliquid ab, numquam officiis dolorem nihil facere aliquam. Laudantium, ducimus modi.
+                                Notre application de gestion fiscale est conçue pour automatiser et simplifier vos tâches fiscales quotidiennes. Grâce à une interface intuitive et des fonctionnalités avancées, vous pouvez gérer vos déclarations, suivre vos paiements et garantir la conformité réglementaire en toute simplicité. Profitez de la sécurité des données, de l'analyse en temps réel et d'un support dédié pour optimiser votre expérience de gestion fiscale.
                             </p>
                         </div>
                         <div className="lg:w-1/2 flex justify-center lg:justify-end">

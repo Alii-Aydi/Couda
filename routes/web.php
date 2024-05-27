@@ -63,7 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/fiscalFilesLogsAll', [FiscalFilesLogsController::class, 'all'])->name('fileLogs.all');
 
         // Agenda
-        Route::get('/agenda', [AgendaController::class, 'show']);
+        Route::get('/agenda', [AgendaController::class, 'show'])->name('agenda');
         Route::get('/commitee/list', [AgendaController::class, 'list']);
         Route::post('/commitee', [AgendaController::class, 'addCommitee']);
         Route::put('/commitee/{id}/fiscalfile/{fid}', [AgendaController::class, 'attachFiscalFileToCommitee']);

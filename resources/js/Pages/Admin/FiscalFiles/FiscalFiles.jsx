@@ -22,8 +22,8 @@ export default function FiscalFiles({ auth }) {
                 <Box sx={{ width: '100%' }}>
                     <Box borderBottom={1} borderColor="divider">
                         <Tabs value={tabValue} onChange={handleTabChange} aria-label="fiscal files tabs">
-                            <Tab label="Active Dossiers" />
-                            <Tab label="Archived Dossiers" />
+                            <Tab label="Dossiers actives" />
+                            <Tab label="Dossiers archivés" />
                         </Tabs>
                     </Box>
                     <div className="p-7 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">

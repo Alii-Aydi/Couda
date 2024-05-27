@@ -175,7 +175,7 @@ export default function AgendaCalander({ auth }) {
                     <h2 className="text-2xl font-semibold mb-4">Add New Commitée Event</h2>
                     <form id='agendaForm' onSubmit={onSubmit}>
                         <div className="mb-4 flex-1">
-                            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre</label>
                             <input
                                 type="text"
                                 id="title"
@@ -202,7 +202,7 @@ export default function AgendaCalander({ auth }) {
                                 {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
                             </div>
                             <div className="mb-4 flex-1">
-                                <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time</label>
+                                <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Temps</label>
                                 <input
                                     type="time"
                                     id="time"
@@ -216,7 +216,7 @@ export default function AgendaCalander({ auth }) {
                             </div>
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="members" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Members</label>
+                            <label htmlFor="members" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Les Membres</label>
                             <MemberSelectList
                                 selectedMembers={members}
                                 setSelectedMembers={value => setData('members', value)}
@@ -224,7 +224,7 @@ export default function AgendaCalander({ auth }) {
                             />
                             {errors.members && <p className="text-red-500 text-sm mt-1">{errors.members}</p>}
                         </div>
-                        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" disabled={processing}>Add Event</button>
+                        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" disabled={processing}>Ajouter Evennemant</button>
                     </form>
                     {errors.error && <p className="text-red-500 text-sm mt-4">{errors.error}</p>}
                 </div>

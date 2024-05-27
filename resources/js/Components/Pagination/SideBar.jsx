@@ -4,6 +4,7 @@ import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, F
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
+import { Inertia } from '@inertiajs/inertia';
 
 export function SidebarWithLogo({ user }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -13,6 +14,12 @@ export function SidebarWithLogo({ user }) {
 
     const name = user.profile_pic?.replace(/\//g, ' ');
     const fileUrl = `/files/${name}`;
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        Inertia.post(route('logout'));
+    };
 
 
     return (
@@ -53,7 +60,7 @@ export function SidebarWithLogo({ user }) {
                         <li>
                             <Link href="/dashboard" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <FiCommand className="w-5 h-5" />
-                                <span className="ml-4">Dashboard</span>
+                                <span className="ml-4">Tableau de bord</span>
                             </Link>
                         </li>
                         <li>
@@ -67,8 +74,8 @@ export function SidebarWithLogo({ user }) {
                             {isGestionDossiersOpen && (
                                 <ul className="pl-8">
                                     <li className="p-2"><Link href="/dashboard/fiscalFilesList" className="block"><FiEye className="inline-block mr-2" /> Consulter</Link></li>
-                                    <li className="p-2"><Link href="/dashboard/createFile" className="block"><FiPlus className="inline-block mr-2" /> Create</Link></li>
-                                    <li className="p-2"><Link href="/dashboard/fiscalFilesLogsList" className="block"><FiList className="inline-block mr-2" /> Logs</Link></li>
+                                    <li className="p-2"><Link href="/dashboard/createFile" className="block"><FiPlus className="inline-block mr-2" /> Creer</Link></li>
+                                    <li className="p-2"><Link href="/dashboard/fiscalFilesLogsList" className="block"><FiList className="inline-block mr-2" /> Journal</Link></li>
                                 </ul>
                             )}
                         </li>
@@ -115,10 +122,10 @@ export function SidebarWithLogo({ user }) {
                     {/* Logout button */}
                     <ul>
                         <li>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <button onClick={handleSubmit} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <FiLogOut className="w-5 h-5 text-red-500" />
-                                <span className="ml-4">Log out</span>
-                            </a>
+                                <span className="ml-4">Se déconnecter</span>
+                            </button>
                         </li>
                     </ul>
                 </div>

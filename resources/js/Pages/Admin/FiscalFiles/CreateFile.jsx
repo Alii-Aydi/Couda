@@ -42,7 +42,7 @@ export default function CreateFiscalFile({ auth }) {
                     if (prevProgress >= 100) {
                         clearInterval(simulateUpload);
                         if (index === acceptedFiles.length - 1) {
-                            setUploadMessage("Upload Successful!");
+                            setUploadMessage("Téléchargement réussi !");
                         }
                         return 100;
                     }
@@ -76,7 +76,7 @@ export default function CreateFiscalFile({ auth }) {
                 <div className="p-7 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name / Company</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom / Entreprise</label>
                             <input
                                 type="text"
                                 name="name"
@@ -88,7 +88,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">CIN/Fiscal Number</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">CIN / Numéro Fiscal</label>
                             <input
                                 type="text"
                                 name="cin_or_fiscal_number"
@@ -100,7 +100,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Taxation Date</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date de Taxation</label>
                             <input
                                 type="date"
                                 name="taxation_date"
@@ -112,7 +112,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tax Center</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Centre des Impôts</label>
                             <input
                                 type="text"
                                 name="tax_center"
@@ -124,7 +124,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tax Amount</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Montant de l'Impôt</label>
                             <input
                                 type="number"
                                 step="0.01"
@@ -137,7 +137,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Theme / Object</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Thème / Objet</label>
                             <input
                                 type="text"
                                 name="theme"
@@ -149,7 +149,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Issuing Organism</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Organisme Émetteur</label>
                             <input
                                 type="text"
                                 name="issuing_organism"
@@ -161,7 +161,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Delivery Date to Admin</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date de Livraison à l'Administration</label>
                             <input
                                 type="date"
                                 name="delivery_date_to_admin"
@@ -173,7 +173,7 @@ export default function CreateFiscalFile({ auth }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Receipt Date</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date de Réception</label>
                             <input
                                 type="date"
                                 name="receipt_date"
@@ -191,11 +191,11 @@ export default function CreateFiscalFile({ auth }) {
                                     {droppedFiles.map((file, index) => (
                                         <div key={index} className="flex items-center justify-center">
                                             {getFileIcon(file.name)}
-                                            <p>{file.name} is ready to be uploaded.</p>
+                                            <p>{file.name} est prêt à être téléchargé.</p>
                                         </div>
                                     ))}
                                 </div>
-                            ) : isDragActive ? <p>Drop the files here ...</p> : <p>Drag and drop Center Rapport, or click to select files</p>}
+                            ) : isDragActive ? <p>Déposez les fichiers ici...</p> : <p>Faites glisser et déposez Center Rapport, ou cliquez pour sélectionner les fichiers</p>}
                         </div>
                         {Object.keys(errors).filter(errorKey => errorKey.includes('report.')).map((errorKey, index) => (
                             <div key={index} className="text-red-500">{errors[errorKey]}</div>
@@ -209,7 +209,7 @@ export default function CreateFiscalFile({ auth }) {
                         )}
 
                         <button type="submit" disabled={processing} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-3xl text-white bg-indigo-500 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-800">
-                            Submit
+                            Sauvgarder
                         </button>
                     </form>
 

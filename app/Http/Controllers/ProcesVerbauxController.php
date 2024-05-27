@@ -133,7 +133,7 @@ class ProcesVerbauxController extends Controller
                     'pv' => $pv,
                     'members' => $committee->members()->withPivot('presence')->get()
                 ];
-                Log::alert($committee->members()->withPivot('presence')->get());
+                // Log::alert($committee->members()->withPivot('presence')->get());
                 $pdfPath = ProcesVerbauxService::generatePDF($pdfData);
                 $pv->pdf = $pdfPath;
                 $pv->save();

@@ -12,7 +12,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, action }) => {
             <DialogTitle>Confirm {action == 'Archiver' ? 'Archival' : 'Restoration'} </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Are you sure you want to {action.toLowerCase()} the selected item(s)?
+                    Êtes-vous sûr de vouloir {action.toLowerCase()} le ou les éléments sélectionnés?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

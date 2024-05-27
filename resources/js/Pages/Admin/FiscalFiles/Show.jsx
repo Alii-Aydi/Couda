@@ -25,7 +25,7 @@ const FiscalFileShow = ({ auth, file }) => {
                                 href="/dashboard/fiscalFilesList"
                                 style={{ borderRadius: '2em' }}
                             >
-                                Back to list
+                                Retour à la liste
                             </Button>
                         </div>
                     </div>

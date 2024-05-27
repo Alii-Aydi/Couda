@@ -136,12 +136,12 @@ export default function MaterialTable({ auth, filesPath, action }) {
             },
             {
                 accessorKey: 'name',
-                header: 'Name',
+                header: 'Nom',
                 size: 10,
             },
             {
                 accessorKey: 'cin_or_fiscal_number',
-                header: 'CIN/Fiscal No.',
+                header: 'CIN/Num Fiscal.',
                 size: 10,
             },
             {
@@ -151,13 +151,13 @@ export default function MaterialTable({ auth, filesPath, action }) {
             },
             {
                 accessorKey: 'created_by',
-                header: 'Created By',
+                header: 'Créé par',
                 Cell: ({ cell }) => userNames[cell.getValue()] || 'Loading...',
                 size: 10,
             },
             {
                 accessorKey: 'taxation_date',
-                header: 'Taxation Date',
+                header: 'Date Taxation',
                 size: 10,
             },
             {
@@ -167,32 +167,32 @@ export default function MaterialTable({ auth, filesPath, action }) {
             },
             {
                 accessorKey: 'tax_amount',
-                header: 'Tax Amount',
+                header: 'Montant Tax',
                 size: 10,
             },
             {
                 accessorKey: 'theme',
-                header: 'Theme',
+                header: 'Théme',
                 size: 10,
             },
             {
                 accessorKey: 'issuing_organism',
-                header: 'Issuing Org.',
+                header: 'Organisme Émetteur',
                 size: 10,
             },
             {
                 accessorKey: 'delivery_date_to_admin',
-                header: 'Delivery Date',
+                header: 'Date de Livraison',
                 size: 10,
             },
             {
                 accessorKey: 'receipt_date',
-                header: 'Receipt Date',
+                header: 'Date Reception',
                 size: 10,
             },
             {
                 accessorKey: 'reports',
-                header: 'Center Report',
+                header: 'Les Rapports',
                 Cell: ({ cell }) => {
                     const files = cell.getValue();
                     return (
@@ -225,7 +225,7 @@ export default function MaterialTable({ auth, filesPath, action }) {
         enableRowSelection: true,
         renderRowActionMenuItems: ({ row }) => [
             <MenuItem key="edit" onClick={() => handleEdit(row.original.id)}>
-                <div className='flex'><PencilSquareIcon className='h-5 pr-2 text-green-500'></PencilSquareIcon>Edit</div>
+                <div className='flex'><PencilSquareIcon className='h-5 pr-2 text-green-500'></PencilSquareIcon>Modifier</div>
             </MenuItem>,
             <MenuItem key="delete" onClick={() => handleDelete(row.original.id)}>
                 <div className='flex'><Archive className='h-5 pr-2 text-gray-500'></Archive> Archiver</div>

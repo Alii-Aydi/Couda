@@ -68,7 +68,7 @@ class FiscalFileController extends Controller
 
         $fiscalFile = $this->fiscalFileService->storeFiscalFile($validated, $request->file('report'));
 
-        return redirect()->route('dashboard')->with('success', 'Fiscal file created successfully!');
+        return redirect()->route('dashboard')->with('success', 'Dossier fiscal créé avec succès !');
     }
 
     public function edit($id)
@@ -102,7 +102,7 @@ class FiscalFileController extends Controller
 
         $fiscalFile = $this->fiscalFileService->update($id, $validatedData, $request->file('report'), json_decode($request->get('deletedFiles'), true));
 
-        return redirect()->route('dashboard')->with('success', 'Fiscal file updated successfully!');
+        return redirect()->route('dashboard')->with('success', 'Dossier fiscal mis à jour avec succès !');
     }
 
     public function archive($id)
@@ -110,9 +110,9 @@ class FiscalFileController extends Controller
         try {
             $this->fiscalFileService->archiveFile($id);
 
-            return response()->json(['sucess' => 'File archived successfully.']);
+            return response()->json(['sucess' => 'Fichier archivé avec succès.']);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to archive file.', 'error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Échec de l\'archivage du fichier.', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -121,7 +121,7 @@ class FiscalFileController extends Controller
         try {
             $this->fiscalFileService->restoreFile($id);
 
-            return response()->json(['sucess' => 'File restored successfully.']);
+            return response()->json(['sucess' => 'Fichier restauré avec succès.']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to restore file.', 'error' => $e->getMessage()], 500);
         }

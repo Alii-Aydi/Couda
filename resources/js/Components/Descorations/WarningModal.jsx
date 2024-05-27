@@ -7,7 +7,7 @@ function WarningModal({ isOpen, onClose }) {
         <Dialog open={isOpen} onClose={onClose} fullWidth>
             <DialogTitle className="flex items-center justify-center">
                 <WarningIcon className="text-orange-500 mr-2" />
-                Warning
+                Avertissement
             </DialogTitle>
             <DialogContent className="p-4">
                 <Typography variant="body1" className="text-center">Sauf les dossiers non traités sont acceptés.</Typography>

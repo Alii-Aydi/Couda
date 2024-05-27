@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\FiscalFileServiceInterface;
+use App\Models\Contact;
 use App\Models\Reclamation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,8 @@ class ReclamationController extends Controller
     public function create($id)
     {
         $file = $this->fiscalFileService->findOne($id);
-        return Inertia::render('Admin/FiscalFiles/MakeReclamation', ["file" => $file]);
+        $contacts = Contact::all();
+        return Inertia::render('Admin/FiscalFiles/MakeReclamation', ["file" => $file, "contacts" => $contacts]);
     }
     public function store(Request $request)
     {
@@ -30,13 +32,13 @@ class ReclamationController extends Controller
 
         if (empty($reasons) && empty($newReports)) {
             // Flash a message indicating that the reclamation is empty
-            return redirect()->back()->with('error', 'Reclamation is empty. Please provide reasons or reports.');
+            return redirect()->back()->with('error', 'La récupération est vide. Veuillez fournir des raisons ou des rapports.');
         }
 
         $reclamation = Reclamation::create([
             'fiscal_file_id' => $request->input('id'),
             'created_by' => auth()->id(),
-            'contact_destination' => 'random',
+            'contact_destination' => $request->input('contact'),
         ]);
 
 
@@ -54,6 +56,6 @@ class ReclamationController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Reclamation stored successfully'], 201);
+        return redirect('/dashboard/fiscalFiles/' . $request->input('id'))->with(['success' => 'Reclamation stored successfully'], 201);
     }
 }

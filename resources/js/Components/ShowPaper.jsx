@@ -27,7 +27,7 @@ const ShowPaper = ({ file, flag = true }) => {
             const fileType = name.split(".").pop().toLowerCase();
 
             if (["jpg", "jpeg", "png", "gif"].includes(fileType)) {
-                imageFiles.push({ src: fileUrl, alt: `Report ${index}` });
+                imageFiles.push({ src: fileUrl, alt: `Rapport ${index}` });
             }
         });
 
@@ -50,62 +50,62 @@ const ShowPaper = ({ file, flag = true }) => {
                 {flag && (
                     <div className="flex justify-between p-2">
                         <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Archiver <Archive className="inline-block text-gray-500 size-5" /></Link>
-                        <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Edit <PencilSquareIcon className="inline-block text-blue-500 size-5" /></Link>
-                        <Link href={`/dashboard/fiscalFiles/${file.id}/reclamation`} className="block p-2">Reclamation <FiAlertCircle className="inline-block text-red-500 size-5" /></Link>
+                        <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Éditer <PencilSquareIcon className="inline-block text-blue-500 size-5" /></Link>
+                        <Link href={`/dashboard/fiscalFiles/${file.id}/reclamation`} className="block p-2">Réclamation <FiAlertCircle className="inline-block text-red-500 size-5" /></Link>
                     </div>
                 )}
             </div>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-4">
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">CIN/Fiscal Number:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">CIN/Numéro Fiscal :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.cin_or_fiscal_number}</Typography>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">Taxation Date:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">Date de Taxation :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.taxation_date}</Typography>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">Tax Center:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">Centre des Impôts :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.tax_center}</Typography>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">Tax Amount:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">Montant de l'Impôt :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.tax_amount}</Typography>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">Theme:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">Thème :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.theme}</Typography>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">Issuing Organism:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">Organisme Émetteur :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.issuing_organism}</Typography>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">Delivery Date to Admin:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">Date de Remise à l'Administration :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.delivery_date_to_admin}</Typography>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent>
-                        <Typography variant="body1" className="dark:text-gray-300">Receipt Date:</Typography>
+                        <Typography variant="body1" className="dark:text-gray-300">Date de Réception :</Typography>
                         <Typography variant="body2" className="dark:text-gray-400">{file.receipt_date}</Typography>
                     </CardContent>
                 </Card>
             </div>
-            <Typography variant="h6" className="mt-4 dark:text-white">Reports:</Typography>
+            <Typography variant="h6" className="mt-4 dark:text-white">Rapports :</Typography>
             <div className="flex flex-wrap justify-between">
                 <Lightbox
                     open={lightboxOpen}
@@ -122,14 +122,14 @@ const ShowPaper = ({ file, flag = true }) => {
                         // For image files, embed the image directly
                         return (
                             <div key={index} className="mt-4 lg:mt-0 cursor-pointer" onClick={() => openImageLightbox(index)}>
-                                <img src={fileUrl} alt={`Report ${index}`} style={{ width: '490px', height: '450px', border: '1px solid #ccc', objectFit: 'contain' }} />
+                                <img src={fileUrl} alt={`Rapport ${index}`} style={{ width: '490px', height: '450px', border: '1px solid #ccc', objectFit: 'contain' }} />
                             </div>
                         );
                     } else if (fileType === 'pdf') {
                         // For PDF files, embed using iframe
                         return (
                             <div key={index} className="mt-4 lg:mt-0">
-                                <iframe src={fileUrl} width="490px" height="450px" title={`Report ${index}`} />
+                                <iframe src={fileUrl} width="490px" height="450px" title={`Rapport ${index}`} />
                             </div>
                         );
                     } else {

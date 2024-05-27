@@ -56,7 +56,7 @@ class AgendaController extends Controller
         $committee->members()->sync($validated['members']);
 
         return redirect()->route('file.list')->with([
-            'info' => 'Événement ajouté avec succès, Veuillez selectioner de 6 a 12 dossier pour confirmer la commitee crée. Si pas de dossier selectioner pendant 3j, la commitée crée sera supprimer',
+            'info' => 'Événement ajouté avec succès, Veuillez selectioner des dossiers pour confirmer la commitee crée.',
             'selected' => true,
         ]);
     }
@@ -73,6 +73,7 @@ class AgendaController extends Controller
         $message = 'Dossiers selectionees';
         Session::flash('success', $message);
 
-        return redirect()->route('makepv', ['id' => $commiteeID])->with(['success' => $message]);
+        // return redirect()->route('makepv', ['id' => $commiteeID])->with(['success' => $message]);
+        return redirect()->route('agenda')->with(['success' => $message]);
     }
 }

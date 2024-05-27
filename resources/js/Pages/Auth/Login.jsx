@@ -20,16 +20,16 @@ const Login = () => {
             <Head title="Login" />
             <div className="flex justify-center items-center min-h-screen">
                 <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md">
-                    <h1 className='text-4xl font-light'>Login to your account</h1>
+                    <h1 className='text-4xl font-light'>Connecter vous</h1>
 
                     <div>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">E-mail</label>
                         <input id="email" name="email" type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} className="rounded-3xl mt-1 block w-full border-indigo-300 hover:border-indigo-500" />
                         {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
                     </div>
 
                     <div>
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Most de passe</label>
                         <input id="password" name="password" type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} className="rounded-3xl mt-1 block w-full border-indigo-300 hover:border-indigo-500" />
                         {errors.password && <div className="text-red-500 text-sm">{errors.password}</div>}
                     </div>
@@ -40,12 +40,6 @@ const Login = () => {
                     </div>
 
                     <button type="submit" disabled={processing} className="px-4 py-2 rounded-3xl bg-indigo-500 text-white hover:bg-indigo-300 w-full">Login</button>
-
-                    <div className="text-center">
-                        <p className="text-sm">
-                            Do not have an account? <a href={route('register')} className="text-indigo-600 hover:underline">Sign Up</a>
-                        </p>
-                    </div>
                 </form>
             </div>
 
