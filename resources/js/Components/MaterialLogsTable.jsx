@@ -2,6 +2,7 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from '@mui/material';
 import getFileIcon from '@/Utils/getFileIcon';
+import { Inertia } from '@inertiajs/inertia';
 export default function MaterialLogsTable({ auth }) {
     const [data, setData] = useState([]);
     const [userNames, setUserNames] = useState({});
@@ -63,6 +64,14 @@ export default function MaterialLogsTable({ auth }) {
         columns,
         data,
         enableSorting: true,
+        muiTableBodyRowProps: ({ row }) => ({
+            //implement row selection click events manually
+            onClick: () =>
+                Inertia.visit(`/dashboard/fiscalFilesLogs/${row.original.id}`),
+            sx: {
+                cursor: 'pointer',
+            },
+        }),
     });
 
 

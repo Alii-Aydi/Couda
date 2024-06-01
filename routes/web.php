@@ -61,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Logs
         Route::get('/fiscalFilesLogsList', [FiscalFilesLogsController::class, 'list'])->name('fileLogs.list');
         Route::get('/fiscalFilesLogsAll', [FiscalFilesLogsController::class, 'all'])->name('fileLogs.all');
+        Route::get('/fiscalFilesLogs/{id}', [FiscalFilesLogsController::class, 'show'])->name('fileLogs.show');
 
         // Agenda
         Route::get('/agenda', [AgendaController::class, 'show'])->name('agenda');

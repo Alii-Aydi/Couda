@@ -32,4 +32,12 @@ class FiscalFilesLogsController extends Controller
             'message' => 'Fiscal files retrieved successfully',
         ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
     }
+
+    public function show($id)
+    {
+        $fiscalFile = $this->fiscalFilesLogsService->findOne($id);
+        return Inertia::render('Admin/FiscalFiles/Show', [
+            'file' => $fiscalFile->load('reports'),
+        ]);
+    }
 }

@@ -52,4 +52,9 @@ class FiscalFilesLogsService implements FiscalFilesLogsServiceInterface
 
         return $fiscalFileLog;
     }
+
+    public function findOne($id)
+    {
+        return FiscalFilesLogs::with('reports')->findOrFail($id);
+    }
 }

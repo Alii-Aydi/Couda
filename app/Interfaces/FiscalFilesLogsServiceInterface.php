@@ -6,4 +6,5 @@ interface FiscalFilesLogsServiceInterface
 {
     public function getAllLogs();
     public function storeFiscalFileLog($fiscalFile, $action);
+    public function findOne($id);
 }
