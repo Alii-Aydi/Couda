@@ -67,7 +67,7 @@ export default function CreateFiscalFile({ auth }) {
     return (
 
         <AuthenticatedLayout
-            user={auth.user}
+            auth={auth}
         >
             <Head title="Creation Dossier" />
 

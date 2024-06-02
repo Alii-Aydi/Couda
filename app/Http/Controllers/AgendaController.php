@@ -34,7 +34,7 @@ class AgendaController extends Controller
 
     public function list()
     {
-        $committees = Committee::all();
+        $committees = Committee::with('members')->get();
         return response()->json($committees);
     }
 

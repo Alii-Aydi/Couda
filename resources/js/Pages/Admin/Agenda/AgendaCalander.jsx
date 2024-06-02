@@ -44,8 +44,15 @@ export default function AgendaCalander({ auth }) {
     }, []);
 
     useEffect(() => {
+        filter()
         formatEvents();
     }, [events]);
+
+    function filter() {
+        if (!loading) {
+            setEvents(events.filter(e => e.members.some(m => m.id === auth.user.id)))
+        }
+    }
 
     function formatEvents() {
         if (!loading) {
@@ -155,7 +162,7 @@ export default function AgendaCalander({ auth }) {
     }, [errors]);
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Agenda" />
 
             <div className="py-12">
@@ -171,63 +178,67 @@ export default function AgendaCalander({ auth }) {
                         <Skeleton variant="rectangular" animation="wave" width="100%" height={1000} />
                     )}
                 </div>
-                <div className="p-7 mt-4 bg-white dark:bg-gray-800 dark:text-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <h2 className="text-2xl font-semibold mb-4">Add New Commitée Event</h2>
-                    <form id='agendaForm' onSubmit={onSubmit}>
-                        <div className="mb-4 flex-1">
-                            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre</label>
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                value={title}
-                                onChange={handleChange}
-                                className={`mt-1 p-2 border ${errors.title ? 'border-red-500' : 'border-gray-300'} dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white w-full`}
-                                style={{ width: '350px' }} // Set width to 350px
-                            />
-                            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+                {
+                    auth.permissions.includes('create comite') ? (
+                        <div className="p-7 mt-4 bg-white dark:bg-gray-800 dark:text-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <h2 className="text-2xl font-semibold mb-4">Ajouter un nouvel événement de comité</h2>
+                            <form id='agendaForm' onSubmit={onSubmit}>
+                                <div className="mb-4 flex-1">
+                                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre</label>
+                                    <input
+                                        type="text"
+                                        id="title"
+                                        name="title"
+                                        value={title}
+                                        onChange={handleChange}
+                                        className={`mt-1 p-2 border ${errors.title ? 'border-red-500' : 'border-gray-300'} dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white w-full`}
+                                        style={{ width: '350px' }} // Set width to 350px
+                                    />
+                                    {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+                                </div>
+                                <div className="flex gap-2">
+                                    <div className="mb-4">
+                                        <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
+                                        <input
+                                            type="date"
+                                            id="date"
+                                            name="date"
+                                            value={date}
+                                            onChange={handleChange}
+                                            className={`mt-1 p-2 border ${errors.date ? 'border-red-500' : 'border-gray-300'} dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white w-full`}
+                                            style={{ width: '350px' }} // Set width to 350px
+                                        />
+                                        {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
+                                    </div>
+                                    <div className="mb-4 flex-1">
+                                        <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Temps</label>
+                                        <input
+                                            type="time"
+                                            id="time"
+                                            name="time"
+                                            value={time}
+                                            onChange={handleChange}
+                                            className={`mt-1 p-2 border ${errors.time ? 'border-red-500' : 'border-gray-300'} dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white w-full`}
+                                            style={{ width: '350px' }} // Set width to 350px
+                                        />
+                                        {errors.time && <p className="text-red-500 text-sm mt-1">{errors.time}</p>}
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <label htmlFor="members" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Les Membres</label>
+                                    <MemberSelectList
+                                        selectedMembers={members}
+                                        setSelectedMembers={value => setData('members', value)}
+                                        style={{ width: '350px' }} // Set width to 350px
+                                    />
+                                    {errors.members && <p className="text-red-500 text-sm mt-1">{errors.members}</p>}
+                                </div>
+                                <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" disabled={processing}>Ajouter Evennemant</button>
+                            </form>
+                            {errors.error && <p className="text-red-500 text-sm mt-4">{errors.error}</p>}
                         </div>
-                        <div className="flex gap-2">
-                            <div className="mb-4">
-                                <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
-                                <input
-                                    type="date"
-                                    id="date"
-                                    name="date"
-                                    value={date}
-                                    onChange={handleChange}
-                                    className={`mt-1 p-2 border ${errors.date ? 'border-red-500' : 'border-gray-300'} dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white w-full`}
-                                    style={{ width: '350px' }} // Set width to 350px
-                                />
-                                {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
-                            </div>
-                            <div className="mb-4 flex-1">
-                                <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Temps</label>
-                                <input
-                                    type="time"
-                                    id="time"
-                                    name="time"
-                                    value={time}
-                                    onChange={handleChange}
-                                    className={`mt-1 p-2 border ${errors.time ? 'border-red-500' : 'border-gray-300'} dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white w-full`}
-                                    style={{ width: '350px' }} // Set width to 350px
-                                />
-                                {errors.time && <p className="text-red-500 text-sm mt-1">{errors.time}</p>}
-                            </div>
-                        </div>
-                        <div className="mb-4">
-                            <label htmlFor="members" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Les Membres</label>
-                            <MemberSelectList
-                                selectedMembers={members}
-                                setSelectedMembers={value => setData('members', value)}
-                                style={{ width: '350px' }} // Set width to 350px
-                            />
-                            {errors.members && <p className="text-red-500 text-sm mt-1">{errors.members}</p>}
-                        </div>
-                        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600" disabled={processing}>Ajouter Evennemant</button>
-                    </form>
-                    {errors.error && <p className="text-red-500 text-sm mt-4">{errors.error}</p>}
-                </div>
+                    ) : ''
+                }
             </div>
         </AuthenticatedLayout>
     );

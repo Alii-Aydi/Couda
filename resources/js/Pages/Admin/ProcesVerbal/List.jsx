@@ -32,7 +32,7 @@ export default function ListProcesVerbaux({ auth, pvs }) {
     });
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="ListProcesVerbaux" />
 
             <div className="py-12">

@@ -84,7 +84,22 @@
         <ul class="list-disc">
             @foreach ($members as $member)
                 @if ($member->pivot->presence == 'present')
-                    <li class="text-sm">{{ $member->name }}</li>
+                    <div class="justify-between w-1/2">
+                        <li class="text-sm">{{ $member->name }}</li>
+                        <span style="margin-left: 8px">
+                            <?php
+                            $filename = $member->signature_path;
+                            $path = Storage::disk('private')->path($filename);
+                            str_replace('\\', '/', $path);
+                            $path = preg_replace('/private/', '', $path, 1);
+                            Log::alert($path);
+                            $data = file_get_contents($path);
+                            $type = pathinfo($path, PATHINFO_EXTENSION);
+                            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                            echo '<img src="' . $base64 . '" style="width:64px; height:32px;" alt="Signature of member">';
+                            ?>
+                        </span>
+                    </div>
                 @endif
             @endforeach
         </ul>
@@ -125,7 +140,20 @@
         <p>{{ $pv->cloture }}</p>
 
         <hr />
-        <div class="signature">Signature</div>
+        <div class="signature">
+            <div>Signature:</div>
+            <?php
+            $filename = $pv->president->signature_path;
+            $path = Storage::disk('private')->path($filename);
+            str_replace('\\', '/', $path);
+            $path = preg_replace('/private/', '', $path, 1);
+            Log::alert($path);
+            $data = file_get_contents($path);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            echo '<img src="' . $base64 . '" style="width:64px; height:32px;" alt="Signature of president">';
+            ?>
+        </div>
     </div>
 </body>
 

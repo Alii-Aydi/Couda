@@ -12,7 +12,7 @@ class ProcesVerbaux extends Model
     protected $table = 'proces_verbaux';
     protected $fillable = [
         'conclusion',
-        'presedent',
+        'president_id',
         'ouverture',
         'cloture',
         'pdf'
@@ -26,5 +26,9 @@ class ProcesVerbaux extends Model
     public function customFields()
     {
         return $this->hasMany(ProcesVerbauxSection::class);
+    }
+    public function president()
+    {
+        return $this->belongsTo(User::class, 'president_id');
     }
 }

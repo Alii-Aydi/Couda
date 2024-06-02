@@ -20,7 +20,7 @@ const EditContact = ({ auth, contact }) => {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Modifier Contact" />
 
             <div className="py-12">

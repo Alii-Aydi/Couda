@@ -6,13 +6,13 @@ import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
 import { Inertia } from '@inertiajs/inertia';
 
-export function SidebarWithLogo({ user }) {
+export function SidebarWithLogo({ auth }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isGestionDossiersOpen, setIsGestionDossiersOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
 
-    const name = user.profile_pic?.replace(/\//g, ' ');
+    const name = auth.user.profile_pic?.replace(/\//g, ' ');
     const fileUrl = `/files/${name}`;
 
     const handleSubmit = (e) => {
@@ -41,7 +41,7 @@ export function SidebarWithLogo({ user }) {
                             <ThemeToggler></ThemeToggler>
                             <div className="mx-4"></div>
                             <Link href='/profile' alt='profile'>
-                                {user.profile_pic ? (
+                                {auth.user.profile_pic ? (
                                     <ProfileCircle src={fileUrl} alt={"Profile Pic"}></ProfileCircle>
                                 ) : (
                                     <ProfileCircle src={"/imgs/avatar.png"} alt={"Profile Pic"}></ProfileCircle>
@@ -63,6 +63,7 @@ export function SidebarWithLogo({ user }) {
                                 <span className="ml-4">Tableau de bord</span>
                             </Link>
                         </li>
+
                         <li>
                             <button onClick={() => setIsGestionDossiersOpen(!isGestionDossiersOpen)} className="flex items-center justify-between w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <div className="flex items-center">
@@ -74,7 +75,12 @@ export function SidebarWithLogo({ user }) {
                             {isGestionDossiersOpen && (
                                 <ul className="pl-8">
                                     <li className="p-2"><Link href="/dashboard/fiscalFilesList" className="block"><FiEye className="inline-block mr-2" /> Consulter</Link></li>
-                                    <li className="p-2"><Link href="/dashboard/createFile" className="block"><FiPlus className="inline-block mr-2" /> Creer</Link></li>
+                                    {
+                                        auth.permissions.includes('create a file') ? (
+                                            <li className="p-2"><Link href="/dashboard/createFile" className="block"><FiPlus className="inline-block mr-2" /> Creer</Link></li>
+                                        ) : ''
+                                    }
+
                                     <li className="p-2"><Link href="/dashboard/fiscalFilesLogsList" className="block"><FiList className="inline-block mr-2" /> Journal</Link></li>
                                 </ul>
                             )}
@@ -93,7 +99,7 @@ export function SidebarWithLogo({ user }) {
                         </li>
                         {/* <li>
                             <Link href="/dashboard/makepv" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <FiUsers className="w-5 h-5" />
+                                <Fiauth.Users className="w-5 h-5" />
                                 <span className="ml-4">Committee</span>
                             </Link>
                         </li> */}
@@ -103,21 +109,24 @@ export function SidebarWithLogo({ user }) {
                                 <span className="ml-4">Notifications</span>
                             </a>
                         </li>
-                        <li>
-                            <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="flex items-center justify-between w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <div className="flex items-center">
-                                    <FiSettings className="w-5 h-5" />
-                                    <span className="ml-4">Parametres</span>
-                                </div>
-                                {isSettingsOpen ? <FiChevronUp className="w-5 h-5" /> : <FiChevronDown className="w-5 h-5" />}
-                            </button>
-                            {isSettingsOpen && (
-                                <ul className="pl-8">
-                                    <li className="p-2"><Link href="/dashboard/settings/infra" className="block"><FiDatabase className="inline-block mr-2" /> Infrastructure</Link></li>
-                                    <li className="p-2"><Link href="/dashboard/settings/accountManagement" className="block"><FiUsers className="inline-block mr-2" /> Gestion Comptes</Link></li>
-                                </ul>
-                            )}
-                        </li>
+                        {auth.permissions.includes('infra') ? (
+                            <li>
+                                <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="flex items-center justify-between w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <div className="flex items-center">
+                                        <FiSettings className="w-5 h-5" />
+                                        <span className="ml-4">Parametres</span>
+                                    </div>
+                                    {isSettingsOpen ? <FiChevronUp className="w-5 h-5" /> : <FiChevronDown className="w-5 h-5" />}
+                                </button>
+                                {isSettingsOpen && (
+                                    <ul className="pl-8">
+                                        <li className="p-2"><Link href="/dashboard/settings/infra" className="block"><FiDatabase className="inline-block mr-2" /> Infrastructure</Link></li>
+                                        <li className="p-2"><Link href="/dashboard/settings/accountManagement" className="block"><FiUsers className="inline-block mr-2" /> Gestion Comptes</Link></li>
+                                    </ul>
+                                )}
+                            </li>
+                        ) : ''
+                        }
                     </ul>
                     {/* Logout button */}
                     <ul>

@@ -217,37 +217,45 @@ export default function MaterialTable({ auth, filesPath, action }) {
         [userNames],
     );
 
+    const roleDossierManager = auth.roles.includes('dossier manager');
+    const roleSecretary = auth.roles.includes('secretary');
+    const roleSuper = auth.roles.includes('super admin');
+
     const table = useMaterialReactTable({
         columns,
         data,
         enableSorting: true,
-        enableRowActions: true,
-        enableRowSelection: true,
-        renderRowActionMenuItems: ({ row }) => [
-            <MenuItem key="edit" onClick={() => handleEdit(row.original.id)}>
-                <div className='flex'><PencilSquareIcon className='h-5 pr-2 text-green-500'></PencilSquareIcon>Modifier</div>
-            </MenuItem>,
-            <MenuItem key="delete" onClick={() => handleDelete(row.original.id)}>
-                <div className='flex'><Archive className='h-5 pr-2 text-gray-500'></Archive> Archiver</div>
-            </MenuItem>,
-        ],
+        enableRowActions: (roleDossierManager || roleSuper) ? true : false,
+        enableRowSelection: (roleDossierManager || roleSecretary || roleSuper) ? true : false,
+        renderRowActionMenuItems: (roleDossierManager || roleSuper) ? ({ row }) => (
+            [
+                <MenuItem key="edit" onClick={() => handleEdit(row.original.id)}>
+                    <div className='flex'><PencilSquareIcon className='h-5 pr-2 text-green-500'></PencilSquareIcon>Modifier</div>
+                </MenuItem>,
+                <MenuItem key="delete" onClick={() => handleDelete(row.original.id)}>
+                    <div className='flex'><Archive className='h-5 pr-2 text-gray-500'></Archive> Archiver</div>
+                </MenuItem>,
+            ]
+        ) : null,
         renderTopToolbarCustomActions: ({ table }) => {
             const rowSelection = table.getState().rowSelection;
             const selectedRows = table.getSelectedRowModel().rows;
             if (selectedRows.length > 0) {
                 return (
                     <div className="flex gap-2">
-                        <button
-                            onClick={() => handleArchiveSelected(selectedRows.reduce((acc, row) => {
-                                acc[row.original.id] = true;
-                                return acc;
-                            }, {}))}
-                            className="flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-300 text-white dark:bg-gray-900 dark:hover:bg-gray-500 transition-colors duration-150 rounded-lg focus:outline-none focus:shadow-outline"
-                        >
-                            <Archive className="h-5 w-5 mr-2" />
-                            {action}
-                        </button>
-                        {action === "Archiver" &&
+                        {(roleDossierManager || roleSuper) ? (
+                            <button
+                                onClick={() => handleArchiveSelected(selectedRows.reduce((acc, row) => {
+                                    acc[row.original.id] = true;
+                                    return acc;
+                                }, {}))}
+                                className="flex items-center justify-center px-4 py-2 bg-gray-500 hover:bg-gray-300 text-white dark:bg-gray-900 dark:hover:bg-gray-500 transition-colors duration-150 rounded-lg focus:outline-none focus:shadow-outline"
+                            >
+                                <Archive className="h-5 w-5 mr-2" />
+                                {action}
+                            </button>
+                        ) : ''}
+                        {auth.permissions.includes('create comite') && action === "Archiver" &&
                             <button
                                 onClick={() => handleSelectForCommetee(selectedRows.reduce((acc, row) => {
                                     acc[row.original.id] = true;

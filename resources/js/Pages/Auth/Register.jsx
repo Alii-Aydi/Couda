@@ -56,7 +56,7 @@ const Register = ({ roles, auth }) => {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Settings" />
 
             <div className="py-12">

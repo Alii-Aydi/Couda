@@ -6,6 +6,7 @@ use App\Interfaces\FiscalFileServiceInterface;
 use App\Models\FiscalFile;
 use App\Services\StorageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;

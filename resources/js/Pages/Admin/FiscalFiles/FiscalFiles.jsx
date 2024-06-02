@@ -14,7 +14,7 @@ export default function FiscalFiles({ auth }) {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Liste Des Dossiers" />
 
             <div className="py-12">
@@ -27,8 +27,8 @@ export default function FiscalFiles({ auth }) {
                         </Tabs>
                     </Box>
                     <div className="p-7 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                        {tabValue === 0 && <MaterialTable filesPath={'/dashboard/fiscalFiles'} action={'Archiver'} />}
-                        {tabValue === 1 && <MaterialTable filesPath={'/dashboard/ArchivedfiscalFiles'} action={'Restorer'} />}
+                        {tabValue === 0 && <MaterialTable auth={auth} filesPath={'/dashboard/fiscalFiles'} action={'Archiver'} />}
+                        {tabValue === 1 && <MaterialTable auth={auth} filesPath={'/dashboard/ArchivedfiscalFiles'} action={'Restorer'} />}
                     </div>
                 </Box>
             </div>

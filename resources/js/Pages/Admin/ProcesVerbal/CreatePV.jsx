@@ -62,7 +62,7 @@ const CreatePV = ({ auth }) => {
 
     return (
         <AuthenticatedLayout
-            user={auth.user}
+            auth={auth}
         >
             <Head title="Archive Dossiers" />
 

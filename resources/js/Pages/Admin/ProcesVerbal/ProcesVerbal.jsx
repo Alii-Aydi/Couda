@@ -32,7 +32,8 @@ const MeetingMinutes = ({ commitee, absences, attende, formData, setFormData, ne
     const handlePresidentChange = (event) => {
         const selectedPresident = event.target.value;
         setPresident(selectedPresident);
-        setFormData({ ...formData, presedent: selectedPresident.name });
+        setFormData({ ...formData, presedent: selectedPresident.id });
+        console.log(selectedPresident)
     };
 
     const handleChange = (event) => {

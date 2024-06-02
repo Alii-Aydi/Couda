@@ -114,7 +114,7 @@ export default function EditFiscalFile({ auth, file }) {
     });
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Edit Dossier" />
             <div className="py-12">
                 <h1 className='p-4 text-4xl'>Edit Dossier Fiscale</h1>

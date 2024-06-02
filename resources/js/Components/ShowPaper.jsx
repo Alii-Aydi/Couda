@@ -12,7 +12,7 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Archive } from '@mui/icons-material';
 import { Card, CardContent, Paper, Typography } from '@mui/material';
 
-const ShowPaper = ({ file, flag = true }) => {
+const ShowPaper = ({ auth, file, flag = true }) => {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(null);
     const [images, setImages] = useState([]);
@@ -47,7 +47,7 @@ const ShowPaper = ({ file, flag = true }) => {
         <Paper elevation={3} className="p-4 dark:bg-gray-800">
             <div className="flex justify-between">
                 <Typography variant="h4" gutterBottom className="dark:text-white">{file.name}</Typography>
-                {flag && (
+                {flag && auth.roles.includes('dossier manager') && (
                     <div className="flex justify-between p-2">
                         <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Archiver <Archive className="inline-block text-gray-500 size-5" /></Link>
                         <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Éditer <PencilSquareIcon className="inline-block text-blue-500 size-5" /></Link>

@@ -5,7 +5,7 @@ import MaterialLogsTable from '@/Components/MaterialLogsTable';
 export default function FiscalFilesLogs({ auth }) {
     return (
         <AuthenticatedLayout
-            user={auth.user}
+            auth={auth}
         >
             <Head title="Archive Dossiers" />
 

@@ -124,7 +124,7 @@ const Dashboard = ({ auth, committees, fiscalFiles }) => {
 
     return (
         <AuthenticatedLayout
-            user={auth.user}
+            auth={auth}
         >
             <Head title="Dashboard" />
 

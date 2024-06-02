@@ -15,7 +15,7 @@ class CreateProcesVerbauxTable extends Migration
     {
         Schema::create('proces_verbaux', function (Blueprint $table) {
             $table->id();
-            $table->string('presedent');
+            $table->foreignId('president_id')->constrained('users');
             $table->text('ouverture');
             $table->text('cloture');
             $table->string('pdf')->nullable();

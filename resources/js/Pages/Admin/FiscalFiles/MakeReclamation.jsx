@@ -87,7 +87,7 @@ const MakeReclamation = ({ auth, file, contacts }) => {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Make Reclamation" />
 
             <div className="py-12">

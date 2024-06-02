@@ -103,7 +103,7 @@ class ProcesVerbauxController extends Controller
 
                 // Step 2: Create Proces Verbaux
                 $pv = new ProcesVerbaux();
-                $pv->presedent = $validatedData['formData']['presedent'];
+                $pv->president_id = $validatedData['formData']['presedent'];
                 $pv->ouverture = $validatedData['formData']['ouverture'];
                 $pv->cloture = $validatedData['formData']['cloture'];
                 $pv->save();
@@ -130,7 +130,7 @@ class ProcesVerbauxController extends Controller
                 // Generate PDF and save path
                 $pdfData = [
                     'committee' => $committee,
-                    'pv' => $pv,
+                    'pv' => $pv->load('president'),
                     'members' => $committee->members()->withPivot('presence')->get()
                 ];
                 // Log::alert($committee->members()->withPivot('presence')->get());

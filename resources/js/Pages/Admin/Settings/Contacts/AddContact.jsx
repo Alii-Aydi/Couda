@@ -20,7 +20,7 @@ const AddContact = ({ auth }) => {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Ajouter Contact" />
 
             <div className="py-12">

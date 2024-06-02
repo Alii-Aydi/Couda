@@ -18,7 +18,7 @@ import { Inertia } from '@inertiajs/inertia';
 export default function MultiStepForm({ commitee }) {
     const members = commitee.members.map(mem => ({ 'name': mem.name, "id": mem.id, 'signature': mem.signature_path }));
     const initialFormData = {
-        'presedent': '',
+        'presedent': 0,
         'ouverture': '',
         'cloture': '',
         // Add members' names as keys with initial value ''
@@ -51,7 +51,7 @@ export default function MultiStepForm({ commitee }) {
             if (!formData.members[key][0]) {
                 listAbs.push(formData.members[key][1])
             } else {
-                listAtt.push({ 'name': formData.members[key][1], 'signature': formData.members[key][2] })
+                listAtt.push({ 'id': key, 'name': formData.members[key][1], 'signature': formData.members[key][2] })
             }
         }
         setAbsences(listAbs)
@@ -75,6 +75,12 @@ export default function MultiStepForm({ commitee }) {
 
             steps[activeStep].fields.forEach((field) => {
                 if (Array.isArray(formData[field])) return
+                if (field === 'presedent') {
+                    if (formData[field] === 0) {
+                        errors[field] = true;
+                    }
+                    return
+                }
                 if (formData[field].trim().length < 3) {
                     errors[field] = true;
                 } else {
@@ -129,6 +135,8 @@ export default function MultiStepForm({ commitee }) {
                 decisionsData: decisions,
                 times: { "start": time, "end": new Date().toLocaleTimeString() }
             };
+
+            console.log('finesh')
 
             const response = await fetch(`/dashboard/commitee/${commitee.id}/makepv`, {
                 method: 'POST',

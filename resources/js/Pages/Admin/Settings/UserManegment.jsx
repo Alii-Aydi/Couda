@@ -19,7 +19,7 @@ export default function UserManegment({ auth }) {
             });
     }, []);
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout auth={auth}>
             <Head title="Settings" />
             <div className="py-12">
                 <h1 className='p-4 text-4xl'>Parametre</h1>
