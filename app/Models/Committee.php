@@ -21,17 +21,12 @@ class Committee extends Model
 
     public function procesVerbaux()
     {
-        return $this->hasOne(ProcesVerbaux::class);
+        return $this->belongsTo(ProcesVerbaux::class);
     }
 
     public function members()
     {
         return $this->belongsToMany(User::class, 'committee_user', 'committee_id', 'user_id');
-    }
-
-    public function signatures()
-    {
-        return $this->belongsToMany(Signature::class);
     }
 
     public function fiscalFiles()

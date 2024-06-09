@@ -50,10 +50,12 @@ export default function AgendaCalander({ auth }) {
 
     function filter() {
         if (!loading) {
-            setEvents(events.filter(e => e.members.some(m => m.id === auth.user.id)))
+            if (!auth.permissions.includes('create comite')) {
+                setEvents(events.filter(e => e.members.some(m => m.id === auth.user.id)))
+            }
         }
     }
-
+    //here
     function formatEvents() {
         if (!loading) {
             const formatted = {};
@@ -62,11 +64,13 @@ export default function AgendaCalander({ auth }) {
                 if (!formatted[dateKey]) {
                     formatted[dateKey] = [];
                 }
+                console.log(event)
                 formatted[dateKey].push({
                     time: event.time_start,
                     title: event.title,
                     id: event.id,
-                    status: event.status
+                    status: event.status,
+                    pv: event.proces_verbaux
                 });
             }
             setFormattedEvents(formatted);
@@ -85,7 +89,6 @@ export default function AgendaCalander({ auth }) {
     }
 
     const getStatusColor = (status) => {
-        console.log(status)
         switch (status) {
             case 'completed':
                 return 'green';
@@ -129,13 +132,15 @@ export default function AgendaCalander({ auth }) {
             return (
                 <td onClick={() => handleCellClick(date)} className="calendar-cell">
                     <ul className="calendar-todo-list">
-                        {displayList.map((item, index) => (
-                            <li key={index}>
-                                <Link href={`/dashboard/commitee/${item.id}/makepv`} className="hover:underline">
-                                    <GroupIcon style={{ fontSize: 20, color: 'gray', color: getStatusColor(item.status) }} /> <b>{item.time}</b> - {item.title}
-                                </Link>
-                            </li>
-                        ))}
+                        {displayList.map((item, index) => {
+                            return (
+                                <li key={index}>
+                                    <a href={!item.pv ? `/dashboard/commitee/${item.id}/makepv` : `/files/${item.pv?.pdf.replace(/\//g, ' ')}`} target={!item.pv ? "" : "_blank"} className="hover:underline">
+                                        <GroupIcon style={{ fontSize: 20, color: 'gray', color: getStatusColor(item.status) }} /> <b>{item.time}</b> - {item.title}
+                                    </a>
+                                </li>
+                            )
+                        })}
                         {moreCount ? moreItem : null}
                     </ul>
                 </td>

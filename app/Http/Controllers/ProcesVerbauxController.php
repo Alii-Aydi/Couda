@@ -28,20 +28,29 @@ class ProcesVerbauxController extends Controller
             'pvs' => $pvs,
         ]);
     }
-    public function showMakePV($commiteeId)
+    public function showMakePV(Request $request, $commiteeId)
     {
         $committee = Committee::with([
             'members',
             'fiscalFiles.reports'
         ])->findOrFail($commiteeId);
 
-        if ($committee->status === 'completed' || $committee->status === 'not-confirmed') {
-            return redirect('/dashboard/agenda')->with(['error' => 'The operation is not allowed because the committee is already completed'], 403);
+        // Check if the user is a member of the committee
+        $isMember = $committee->members->contains($request->user()->id);
+
+        if (!$isMember) {
+            return redirect('/dashboard/agenda')->with(['error' => 'L\'utilisateur n\'est pas un membre du comité'], 403);
         }
+
+        if ($committee->status === 'completed' || $committee->status === 'not-confirmed') {
+            return redirect('/dashboard/agenda')->with(['error' => 'L\'opération n\'est pas autorisée car le comité n\'est pas encore confirmé'], 403);
+        }
+
         return Inertia::render('Admin/ProcesVerbal/CreatePV', [
             'committee' => $committee,
         ]);
     }
+
 
     public function storePV($committeeId, Request $request)
     {
@@ -79,7 +88,7 @@ class ProcesVerbauxController extends Controller
                 $committee = Committee::findOrFail($committeeId);
 
                 if ($committee->status === 'completed' || $committee->status === 'not-confirmed') {
-                    return response()->json(['error' => 'The operation is not allowed because the committee is already completed'], 403);
+                    return response()->json(['error' => 'L\'opération n\'est pas autorisée car le comité n\' est pas encor cofirmé'], 403);
                 }
 
                 foreach ($validatedData['formData']['members'] as  $userId => $userData) {

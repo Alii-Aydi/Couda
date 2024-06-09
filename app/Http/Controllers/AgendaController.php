@@ -34,7 +34,7 @@ class AgendaController extends Controller
 
     public function list()
     {
-        $committees = Committee::with('members')->get();
+        $committees = Committee::with(['members', 'procesVerbaux'])->get();
         return response()->json($committees);
     }
 
