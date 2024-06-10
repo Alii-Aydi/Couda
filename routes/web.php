@@ -71,6 +71,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/commitee/list', [AgendaController::class, 'list']);
         });
 
+        Route::get('/reclamation/form/{id}', [ReclamationController::class, 'showForm'])->name('reclamation.form');
+        Route::post('/reclamation/{reclamation}', [ReclamationController::class, 'submitReclamation'])->name('reclamation.submit');
+
         //Account Manegment
         Route::middleware(['permission:infra'])->group(function () {
             Route::get('/settings/accountManagement', [SettingsControler::class, 'account'])->name('setting.users');

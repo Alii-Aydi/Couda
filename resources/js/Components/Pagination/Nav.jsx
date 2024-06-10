@@ -35,8 +35,8 @@ export default function Navbar({ user }) {
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1">
                     <a href="/" className="-m-1.5 p-1.5">
-                        <span className="sr-only">Minester</span>
-                        <img className="h-8 w-auto" src="imgs/Insigne_Ministère_des_Finances.svg.png" alt="" />
+                        <span className="sr-only">Minester de Finance</span>
+                        <img className="h-8 w-auto" src="/imgs/Insigne_Ministère_des_Finances.svg.png" alt="" />
                     </a>
                 </div>
                 <div className="flex lg:hidden">
@@ -50,6 +50,9 @@ export default function Navbar({ user }) {
                     </button>
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12">
+                    <Link href="/" className="text-sm font-semibold leading-6 text-gray-900">
+                        Acceille
+                    </Link>
                     <Link href="/dashboard" className="text-sm font-semibold leading-6 text-gray-900">
                         Tableau de bord
                     </Link>
@@ -87,7 +90,7 @@ export default function Navbar({ user }) {
                             <span className="sr-only">Votre Compagnie</span>
                             <img
                                 className="h-8 w-auto"
-                                src="imgs/Insigne_Ministère_des_Finances.svg.png"
+                                src="/imgs/Insigne_Ministère_des_Finances.svg.png"
                                 alt=""
                             />
                         </a>

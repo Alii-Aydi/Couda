@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReclamationRequest;
 use App\Interfaces\FiscalFileServiceInterface;
 use App\Models\Contact;
 use App\Models\Reclamation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class ReclamationController extends Controller
@@ -57,5 +59,18 @@ class ReclamationController extends Controller
         }
 
         return redirect('/dashboard/fiscalFiles/' . $request->input('id'))->with(['success' => 'Reclamation stored successfully'], 201);
+    }
+
+    public function showForm($id)
+    {
+        $reclamation = Reclamation::with(['attributesReclamations', 'reportsReclamations'])->findOrFail($id);
+        return Inertia::render('Admin/FiscalFiles/ReclamationForm', ['reclamation' => $reclamation]);
+    }
+
+    public function submitReclamation(ReclamationRequest $request, Reclamation $reclamation)
+    {
+        $validated = $request->validated();
+
+        Log::alert($validated);
     }
 }

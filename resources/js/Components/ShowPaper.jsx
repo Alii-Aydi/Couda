@@ -47,7 +47,7 @@ const ShowPaper = ({ auth, file, flag = true }) => {
         <Paper elevation={3} className="p-4 dark:bg-gray-800">
             <div className="flex justify-between">
                 <Typography variant="h4" gutterBottom className="dark:text-white">{file.name}</Typography>
-                {flag && auth.roles.includes('dossier manager') && (
+                {flag && (auth.roles.includes('dossier manager') || auth.roles.includes('super admin')) && (
                     <div className="flex justify-between p-2">
                         <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Archiver <Archive className="inline-block text-gray-500 size-5" /></Link>
                         <Link href="/dashboard/fiscalFiles/reclamation" className="block p-2">Éditer <PencilSquareIcon className="inline-block text-blue-500 size-5" /></Link>

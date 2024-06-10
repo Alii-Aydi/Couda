@@ -9,7 +9,7 @@ const Footer = () => {
                 <div className="xl:flex xl:justify-between">
                     <div className="mb-6 xl:mb-0 flex-shrink-0">
                         <Link className="flex" href="/">
-                            <img src="imgs/Insigne_Ministère_des_Finances.svg.png" alt="Ministry Logo" className="h-12" />
+                            <img src="/imgs/Insigne_Ministère_des_Finances.svg.png" alt="Ministry Logo" className="h-12" />
                         </Link>
 
                         <p className="mt-2 text-sm text-gray-500">Ministère_des_Finances.</p>
