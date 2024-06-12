@@ -148,6 +148,41 @@ export default function MaterialTable({ auth, filesPath, action }) {
                 accessorKey: 'status',
                 header: 'Status',
                 size: 10,
+                Cell: ({ cell }) => {
+                    const status = cell.getValue();
+                    let circleColor = '';
+                    let textColor = '';
+
+                    switch (status) {
+                        case 'accepted':
+                            circleColor = 'bg-green-500';
+                            textColor = 'text-green-500';
+                            break;
+                        case 'selected':
+                            circleColor = 'bg-orange-500';
+                            textColor = 'text-orange-500';
+                            break;
+                        case 'delayed':
+                            circleColor = 'bg-yellow-500';
+                            textColor = 'text-yellow-500';
+                            break;
+                        case 'rejected':
+                            circleColor = 'bg-red-500';
+                            textColor = 'text-red-500';
+                            break;
+                        default:
+                            circleColor = 'bg-gray-500';
+                            textColor = 'text-gray-500';
+                    }
+
+                    return (
+                        <div className="flex items-center">
+                            <div className={`w-3 h-3 rounded-full mr-2 ${circleColor}`}></div>
+                            <span className={textColor}>{status}</span>
+                        </div>
+                    );
+                }
+
             },
             {
                 accessorKey: 'created_by',
