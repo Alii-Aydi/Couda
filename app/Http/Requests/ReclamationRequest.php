@@ -35,7 +35,7 @@ class ReclamationRequest extends FormRequest
         // Combine all rules
         $rules = array_merge($attRules, $repRules);
 
-        Log::critical($rules);
+        // Log::critical($rules);
 
         return $rules;
     }

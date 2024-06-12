@@ -14,6 +14,7 @@ class CreateReclamationsTable extends Migration
             $table->unsignedBigInteger('created_by');
             $table->string('contact_destination'); // Assuming it's an email
             $table->timestamp('expiration_date')->default(now()->addDays(3));
+            $table->string('token')->nullable();
             $table->timestamps();
         });
     }

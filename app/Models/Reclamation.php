@@ -13,6 +13,7 @@ class Reclamation extends Model
         'fiscal_file_id',
         'created_by',
         'contact_destination',
+        'token',
     ];
 
     // Define the relationship with AttributesReclamation model

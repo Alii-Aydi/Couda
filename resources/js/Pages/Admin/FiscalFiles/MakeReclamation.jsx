@@ -193,7 +193,7 @@ const MakeReclamation = ({ auth, file, contacts }) => {
                                     >
                                         <option disabled value="">Contact</option>
                                         {contacts.map((contact) => (
-                                            <option key={contact.id} value={contact.id}>{contact.email}</option>
+                                            <option key={contact.id} value={contact.email}>{contact.email}</option>
                                         ))}
                                     </TextField>
                                 </div>
