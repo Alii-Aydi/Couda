@@ -25,8 +25,8 @@ class ResReclamation extends Model
         return $this->hasMany(RepoRes::class);
     }
 
-    public function contact()
+    public function fiscalFile()
     {
-        return $this->hasOne(Contact::class);
+        return $this->belongsTo(FiscalFile::class);
     }
 }

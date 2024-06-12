@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiAlertCircle, FiEye, FiList, FiCalendar, FiUsers, FiDatabase } from 'react-icons/fi';
+import { FiCommand, FiSettings, FiInbox, FiLogOut, FiChevronDown, FiChevronUp, FiFolder, FiPlus, FiEdit, FiAlertCircle, FiEye, FiList, FiCalendar, FiUsers, FiDatabase, FiClipboard } from 'react-icons/fi';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import ThemeToggler from '../Descorations/CustomTogler';
 import ProfileCircle from '../Profile/Partials/ProfileCircle';
@@ -10,6 +10,7 @@ export function SidebarWithLogo({ auth }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isGestionDossiersOpen, setIsGestionDossiersOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
 
 
     const name = auth.user.profile_pic?.replace(/\//g, ' ');
@@ -103,12 +104,23 @@ export function SidebarWithLogo({ auth }) {
                                 <span className="ml-4">Committee</span>
                             </Link>
                         </li> */}
-                        <li>
-                            <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <FiInbox className="w-5 h-5" />
-                                <span className="ml-4">Notifications</span>
-                            </a>
-                        </li>
+                        {auth.permissions.includes('edit file') ? (
+                            <li>
+                                <button onClick={() => setIsNotifOpen(!isNotifOpen)} className="flex items-center justify-between w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <div className="flex items-center">
+                                        <FiInbox className="w-5 h-5" />
+                                        <span className="ml-4">Notifications</span>
+                                    </div>
+                                    {isNotifOpen ? <FiChevronUp className="w-5 h-5" /> : <FiChevronDown className="w-5 h-5" />}
+                                </button>
+                                {isNotifOpen && (
+                                    <ul className="pl-8">
+                                        <li className="p-2"><Link href="/dashboard/reclamations/res" className="block"><FiClipboard className="inline-block mr-2" /> Responses Reclamations</Link></li>
+                                    </ul>
+                                )}
+                            </li>
+                        ) : ''
+                        }
                         {auth.permissions.includes('infra') ? (
                             <li>
                                 <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="flex items-center justify-between w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">

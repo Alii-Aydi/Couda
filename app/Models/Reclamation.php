@@ -26,4 +26,9 @@ class Reclamation extends Model
     {
         return $this->hasMany(ReportsReclamation::class);
     }
+
+    public function fiscalFile()
+    {
+        return $this->belongsTo(FiscalFile::class);
+    }
 }

@@ -35,6 +35,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/createFile', [FiscalFileController::class, 'store'])->name('file.store');
             Route::get('/fiscalFiles/{id}/reclamation', [ReclamationController::class, 'create']);
             Route::post('/fiscalFiles/{id}/reclamation', [ReclamationController::class, 'store']);
+            Route::get('/reclamation/details/{id}', [ReclamationController::class, 'showReclamationDetails'])->name('reclamation.details');
+            Route::get('/reclamations/res', [ReclamationController::class, 'index'])->name('reclamations.index');
         });
 
         Route::middleware(['permission:edit file'])->group(function () {

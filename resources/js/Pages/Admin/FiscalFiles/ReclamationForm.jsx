@@ -36,7 +36,7 @@ function ReclamationForm({ flash, auth, reclamation }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(data)
-        post(`/dashboard/reclamation/${id}`);
+        post(`/dashboard/reclamation/${id}?token=${reclamation.token}`);
     };
 
     const renderDropzone = (name) => {

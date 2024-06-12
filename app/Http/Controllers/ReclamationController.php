@@ -31,6 +31,15 @@ class ReclamationController extends Controller
         $this->storageService = $storageService;
     }
 
+    public function index()
+    {
+        $reclamations = Reclamation::all();
+
+        return Inertia::render('Admin/Notifications/ResReclamations', [
+            'reclamations' => $reclamations
+        ]);
+    }
+
     public function create($id)
     {
         $file = $this->fiscalFileService->findOne($id);
@@ -134,5 +143,13 @@ class ReclamationController extends Controller
 
         // Return a success response or redirect
         return redirect('/')->with('success', 'Response soumise avec succès');
+    }
+
+    public function showReclamationDetails($id)
+    {
+        $resReclamation = ResReclamation::with(['attRes', 'repoRes', 'fiscalFile'])->findOrFail($id);
+        return Inertia::render('Admin/FiscalFiles/ResReclamation', [
+            'resReclamation' => $resReclamation
+        ]);
     }
 }
