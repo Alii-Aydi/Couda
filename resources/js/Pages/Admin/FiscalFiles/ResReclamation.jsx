@@ -134,7 +134,7 @@ const ReclamationDetails = ({ auth, file }) => {
                             className="dark:bg-red-700 dark:text-white rounded-full px-4 py-2 flex items-center gap-2 transition-colors duration-300 ease-in-out hover:bg-purple-500 hover:text-white"
                             startIcon={<ArrowBackIcon />}
                             component={Link}
-                            href="/dashboard/fiscalFilesList"
+                            href="/dashboard/reclamations/res"
                             style={{ borderRadius: '2em' }}
                         >
                             Notifications

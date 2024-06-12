@@ -33,7 +33,7 @@ class ReclamationController extends Controller
 
     public function index()
     {
-        $reclamations = Reclamation::all();
+        $reclamations = ResReclamation::all();
 
         return Inertia::render('Admin/Notifications/ResReclamations', [
             'reclamations' => $reclamations
